@@ -7,7 +7,7 @@ export default {
 	  name: 'iteration-table',
 	  created () {
 	    if (this.$route.params.task) {
-			this.taskDetails = true
+      this.taskDetails = true
 	    }
 	  },
 	  data () {
@@ -98,7 +98,7 @@ export default {
 	      this.taskDetails = false
 	    }
 	  }
-	}
+}
 </script>
 
 <template>

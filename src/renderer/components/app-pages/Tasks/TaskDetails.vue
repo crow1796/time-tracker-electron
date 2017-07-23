@@ -4,36 +4,36 @@ export default {
   name: 'task-details',
   data () {
     return {
-		task: {
-			created_by: {
-				id: 1,
-				first_name: 'Joshua',
-				last_name: 'Tundag'
-			},
-			assignee: {
-				id: 1,
-				first_name: 'Joshua',
-				last_name: 'Tundag'
-			},
-			status: 'NOT YET STARTED',
-			ticket_id: 202901,
-			title: 'New Form: TOS',
-			git_branch: '',
-			asana_id: '',
-			description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Neque, quia tenetur facere dicta maxime perspiciatis nesciunt perferendis totam saepe, natus atque quae excepturi aut asperiores quasi quidem sit, reiciendis maiores.',
-			project: {
-				id: '4',
-				title: 'LawFormsUSA'
-			},
-			iteration: 1711
-		}
-		}
-	},
-	methods: {
-		__taskStatusIs (taskStatus, status) {
-			return _.includes(!_.isArray(status) ? [status] : status, taskStatus)
-		}
-	}
+      task: {
+        created_by: {
+          id: 1,
+          first_name: 'Joshua',
+          last_name: 'Tundag'
+        },
+        assignee: {
+          id: 1,
+          first_name: 'Joshua',
+          last_name: 'Tundag'
+        },
+        status: 'NOT YET STARTED',
+        ticket_id: 202901,
+        title: 'New Form: TOS',
+        git_branch: '',
+        asana_id: '',
+        description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Neque, quia tenetur facere dicta maxime perspiciatis nesciunt perferendis totam saepe, natus atque quae excepturi aut asperiores quasi quidem sit, reiciendis maiores.',
+        project: {
+          id: '4',
+          title: 'LawFormsUSA'
+        },
+        iteration: 1711
+      }
+    }
+  },
+  methods: {
+    __taskStatusIs (taskStatus, status) {
+      return _.includes(!_.isArray(status) ? [status] : status, taskStatus)
+    }
+  }
 }
 </script>
 
