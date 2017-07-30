@@ -18,15 +18,15 @@ Vue.config.productionTip = false
 
 Vue.use(Buefy)
 
-axios.interceptors.response.use((config) => {
-  NProgress.start()
-  const authToken = store.getters.userToken
-  config.headers.Authorization = `Bearer ${authToken}`
+// axios.interceptors.response.use((config) => {
+//   NProgress.start()
+//   const authToken = store.getters.userToken
+//   config.headers.Authorization = `Bearer ${authToken}`
 
-  next((response) => {
-    NProgress.done()
-  })
-})
+//   next((response) => {
+//     NProgress.done()
+//   })
+// })
 
 /* eslint-disable no-new */
 new Vue({

@@ -19,16 +19,14 @@
 	<div id="login">
 		<form class="box" id="login-form" @submit.prevent="loginUser">
 			<h3 class="title is-3">Login</h3>
-			<b-field label="E-mail Address:">
-			    <b-input placeholder="Enter your E-mail Address" v-model="email"></b-input>
-			</b-field>
-			<b-field label="Password">
-			    <b-input type="password"
-			        placeholder="Enter your Password" 
-			        v-model="password"
-			        password-reveal>
-			    </b-input>
-			</b-field>
+			<label for="email" class="label">E-mail Address:</label>
+			<div class="control">
+				<input type="text" class="input" name="email" id="email" placeholder="Enter your E-mail Address" v-model="email">
+			</div>
+			<label for="email" class="label">Password:</label>
+			<div class="control">
+				<input type="password" class="input" name="password" id="password" placeholder="Enter Password" v-model="password">
+			</div>
 			<div class="block level">
 			    <div class="level-left">
 			    	<div class="level-item">

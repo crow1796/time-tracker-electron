@@ -9,7 +9,10 @@
         require('module').globalPaths.push('<%= htmlWebpackPlugin.options.nodeModules.replace(/\\/g, '\\\\') %>')
       </script>
     <% } %>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <script>
+      window.API_URL = 'http://time-tracker-api.dev';
+    </script>
+    <link rel="stylesheet" type="text/css" href="/node_modules/material-icons/css/material-icons.min.css">
   </head>
   <body>
     <div id="app"></div>
