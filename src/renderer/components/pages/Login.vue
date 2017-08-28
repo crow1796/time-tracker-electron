@@ -2,18 +2,43 @@
 export default {
 	data () {
 		return {
-			email: null,
-			password: null,
-			remember: false,
-			isLoading: false
+			isLoading: false,
+			loginData: {
+				email: null,
+				password: null,
+				remember: false
+			},
+			rules: {
+				email: [
+					{
+						required: true,
+						message: 'E-mail Address is required.'
+					}
+				],
+				password: [
+					{
+						required: true,
+						message: 'Password is required.'
+					}
+				]
+			}
 		}
 	},
 	methods: {
 		loginUser () {
+			this.$refs.loginForm.validate((valid) => {
+                if (valid) {
+                    this.$Message.success('Logging in...')
+                } else {
+                    this.$Message.error('Please fill in the required data.')
+                }
+            })
 			this.isLoading = true
-			this.$store.dispatch('loginUser', { email: this.email, password: this.password })
+			this.$store.dispatch('loginUser', this.loginData)
 				.then((response) => {
 					this.isLoading = false
+					if(response.data.token) this.$Message.success('Logged in Successfully!')
+					this.$router.push('/')
 				})
 		}
 	}
@@ -22,43 +47,27 @@ export default {
 
 <template>
 	<div id="login">
-		<form id="login-form" @submit.prevent="loginUser">
-			<h3 class="title is-3">Login</h3>
-			<label for="email" class="label">E-mail Address:</label>
-			<div class="control">
-				<Input v-model="email" placeholder="Enter your E-mail Address"></Input>
-			</div>
-			<label for="email" class="label">Password:</label>
-			<div class="control">
-				<input type="password" class="input" name="password" id="password" placeholder="Enter Password" v-model="password">
-			</div>
-			<div class="block level">
-			    <div class="level-left">
-			    	<div class="level-item">
-			    		<b-checkbox v-model="remember">Remember Me?</b-checkbox>
-			    	</div>
-			    </div>
-				<div class="level-right">
-					<div class="level-item">
-						<router-link to="/forgot-password">Forgot Password?</router-link>
-					</div>
-				</div>
-			</div>
-			<div class="level">
-				<div class="level-left">
-					<div class="level-item">
-						<router-link to="/register">Create an account</router-link>
-					</div>
-				</div>
-				<div class="level-right">
-					<div class="level-item">
-						<button type="submit" class="button is-primary" :class="{ 'is-loading': isLoading }">
-							Login
-						</button>
-					</div>
-				</div>
-			</div>
-		</form>
+		<div id="login-form">
+			<Form ref="loginForm" :model="loginData" :rules="rules" label-position="top">
+		        <FormItem label="Email" prop="email">
+		            <Input type="text" v-model="loginData.email" placeholder="Enter your E-mail Address"></Input>
+		        </FormItem>
+		        <FormItem label="Password" prop="password">
+		            <Input type="password" v-model="loginData.password" placeholder="Enter Password"></Input>
+		        </FormItem>
+		        <FormItem>
+		            <Checkbox v-model="loginData.remember">Remember Me?</Checkbox>
+		        </FormItem>
+		        <FormItem>
+		            <Button v-if="!isLoading" type="primary" @click="loginUser" long login>Login</Button>
+		            <Spin size="large" fix v-if="isLoading"></Spin>
+		        </FormItem>
+		        <FormItem>
+		        	<router-link to="/forgot-password">Forgot Password?</router-link> or 
+		        	<router-link to="/register">Create an account</router-link>
+		        </FormItem>
+		    </Form>
+		</div>
 	</div>
 </template>
 

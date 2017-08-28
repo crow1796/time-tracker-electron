@@ -25,10 +25,10 @@ const actions = {
                         context.commit('USER_AUTH_STATUS', true)
                         if (router.currentRoute.query.redirect) {
                             router.push(router.currentRoute.query.redirect)
-                            return true
+                            return response
                         }
-                        router.push('/')
                     }
+                    return response
                 })
     },
     logoutUser (context, params) {
