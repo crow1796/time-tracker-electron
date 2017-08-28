@@ -4,100 +4,104 @@ import TaskDetails from './TaskDetails'
 import Timer from 'easytimer'
 import _ from 'lodash'
 export default {
-	  name: 'iteration-table',
-	  created () {
-	    if (this.$route.params.task) {
-      this.taskDetails = true
-	    }
-	  },
-	  data () {
-	    return {
-	      tableData: [
-		            {'id': 1, 'ticket_id': '202901', 'task': {'title': 'Task #1', 'description': 'Task Desc #1', status: 'NOT YET STARTED'}, timer: null, timerModel: null, selected: false},
-		            {'id': 2, 'ticket_id': '202902', 'task': {'title': 'Task #2', 'description': 'Task Desc #2', status: 'NOT YET STARTED'}, timer: null, timerModel: null, selected: false},
-		            {'id': 3, 'ticket_id': '202903', 'task': {'title': 'Task #3', 'description': 'Task Desc #3', status: 'NOT YET STARTED'}, timer: null, timerModel: null, selected: false},
-		            {'id': 9, 'ticket_id': '202904', 'task': {'title': 'Task #4', 'description': 'Task Desc #4', status: 'NOT YET STARTED'}, timer: null, timerModel: null, selected: false},
-		            {'id': 5, 'ticket_id': '202905', 'task': {'title': 'Task #5', 'description': 'Task Desc #5', status: 'NOT YET STARTED'}, timer: null, timerModel: null, selected: false},
-		            {'id': 6, 'ticket_id': '202906', 'task': {'title': 'Task #6', 'description': 'Task Desc #6', status: 'NOT YET STARTED'}, timer: null, timerModel: null, selected: false},
-		            {'id': 7, 'ticket_id': '202907', 'task': {'title': 'Task #7', 'description': 'Task Desc #7', status: 'NOT YET STARTED'}, timer: null, timerModel: null, selected: false},
-		            {'id': 8, 'ticket_id': '202908', 'task': {'title': 'Task #8', 'description': 'Task Desc #8', status: 'NOT YET STARTED'}, timer: null, timerModel: null, selected: false},
-		            {'id': 9, 'ticket_id': '202909', 'task': {'title': 'Task #9', 'description': 'Task Desc #9', status: 'NOT YET STARTED'}, timer: null, timerModel: null, selected: false},
-		            {'id': 10, 'ticket_id': '202910', 'task': {'title': 'Task #10', 'description': 'Task Desc #10', status: 'NOT YET STARTED'}, timer: null, timerModel: null, selected: false}
-		        ],
-	      checkedRows: [],
-	      isBordered: false,
-	      isStriped: true,
-	      isNarrowed: false,
-	      isCheckable: true,
-	      isLoading: false,
-	      hasMobileCards: true,
-	      isPaginated: true,
-	      isPaginationSimple: false,
-	      perPage: 10,
-	      iterationTitle: null,
-	      projectTitle: null,
-	      filteredProjectArray: [],
-	      filteredIterationArray: [],
-	      ticketFormActive: false,
-	      TicketForm,
-	      TaskDetails,
-	      filter: {
-	        project: null,
-	        iteration: null,
-	        status: '',
-	        keyword: null
-	      },
-	      taskDetails: false
-	    }
-  },
-	  methods: {
-	    trackerSwitchChanged (task) {
-	      this.isLoading = true
-	      let hasEvent = false
-	      if (task.timer) {
-	        hasEvent = true
-	      }
-	      task.timer = task.timer ? task.timer : new Timer()
-	      if (!hasEvent) {
-	        task.timer.addEventListener('secondsUpdated', (e) => {
-					    task.timerModel = task.timer.getTimeValues().toString()
-	        })
-      }
-	      if (task.selected) {
-	        task.timer.start()
-	        this.changeStatusOf(task.task, 'IN PROGRESS')
-	        this.isLoading = false
-	        return true
-	      }
-	      task.timer.pause()
-	      this.changeStatusOf(task.task, 'PAUSED')
-	      this.isLoading = false
-	    },
-	    changeStatusOf (task, status) {
-	      task.status = status
-	    },
-	    __taskStatusIs (taskStatus, status) {
-	      return _.includes(!_.isArray(status) ? [status] : status, taskStatus)
-	    },
-	    selectProject (option) {
-	      this.filter.project = option
-	    },
-	    selectIteration (option) {
-	      this.filter.iteration = option
-	    },
-	    taskDetailsClosed () {
-	      this.$router.replace(`/tasks`)
-	    }
-	  },
-	  watch: {
-	    '$route.params.task' (to, from) {
-	      if (to) {
-	        this.taskDetails = true
-	        return true
-	      }
-	      this.taskDetails = false
-	    }
-	  }
+	name: 'iteration-table',
+	created () {
+		if (this.$route.params.task) {
+			this.taskDetails = true
+		}
+	},
+	data () {
+		return {
+			tableData: [
+				{'id': 1, 'ticket_id': '202901', 'task': {'title': 'Task #1', 'description': 'Task Desc #1', status: 'NOT YET STARTED'}, timer: null, timerModel: null, selected: false},
+				{'id': 2, 'ticket_id': '202902', 'task': {'title': 'Task #2', 'description': 'Task Desc #2', status: 'NOT YET STARTED'}, timer: null, timerModel: null, selected: false},
+				{'id': 3, 'ticket_id': '202903', 'task': {'title': 'Task #3', 'description': 'Task Desc #3', status: 'NOT YET STARTED'}, timer: null, timerModel: null, selected: false},
+				{'id': 9, 'ticket_id': '202904', 'task': {'title': 'Task #4', 'description': 'Task Desc #4', status: 'NOT YET STARTED'}, timer: null, timerModel: null, selected: false},
+				{'id': 5, 'ticket_id': '202905', 'task': {'title': 'Task #5', 'description': 'Task Desc #5', status: 'NOT YET STARTED'}, timer: null, timerModel: null, selected: false},
+				{'id': 6, 'ticket_id': '202906', 'task': {'title': 'Task #6', 'description': 'Task Desc #6', status: 'NOT YET STARTED'}, timer: null, timerModel: null, selected: false},
+				{'id': 7, 'ticket_id': '202907', 'task': {'title': 'Task #7', 'description': 'Task Desc #7', status: 'NOT YET STARTED'}, timer: null, timerModel: null, selected: false},
+				{'id': 8, 'ticket_id': '202908', 'task': {'title': 'Task #8', 'description': 'Task Desc #8', status: 'NOT YET STARTED'}, timer: null, timerModel: null, selected: false},
+				{'id': 9, 'ticket_id': '202909', 'task': {'title': 'Task #9', 'description': 'Task Desc #9', status: 'NOT YET STARTED'}, timer: null, timerModel: null, selected: false},
+				{'id': 10, 'ticket_id': '202910', 'task': {'title': 'Task #10', 'description': 'Task Desc #10', status: 'NOT YET STARTED'}, timer: null, timerModel: null, selected: false}
+			],
+			checkedRows: [],
+			isBordered: false,
+			isStriped: true,
+			isNarrowed: false,
+			isCheckable: true,
+			isLoading: false,
+			hasMobileCards: true,
+			isPaginated: true,
+			isPaginationSimple: false,
+			perPage: 10,
+			iterationTitle: null,
+			projectTitle: null,
+			filteredProjectArray: [],
+			filteredIterationArray: [],
+			ticketFormActive: false,
+			TicketForm,
+			TaskDetails,
+			filter: {
+			project: null,
+			iteration: null,
+			status: '',
+			keyword: null
+			},
+			taskDetails: false
+		}
+	},
+	methods: {
+		trackerSwitchChanged (task) {
+			this.isLoading = true
+			_.map(this.tableData, (row) => {
+				if(row.id === task.id) return false
+				if(row.timer){
+					row.timer.pause()
+					this.changeStatusOf(row.task, 'PAUSED')
+					row.selected = false
+				}
+			})
+
+			task.timer = task.timer ? task.timer : new Timer()
+			task.timer.addEventListener('secondsUpdated', (e) => {
+			    task.timerModel = task.timer.getTimeValues().toString()
+			})
+
+			if (task.selected) {
+				task.timer.start()
+				this.changeStatusOf(task.task, 'IN PROGRESS')
+				this.isLoading = false
+				return true
+			}
+			task.timer.pause()
+			this.changeStatusOf(task.task, 'PAUSED')
+			this.isLoading = false
+		},
+		changeStatusOf (task, status) {
+			task.status = status
+		},
+		__taskStatusIs (taskStatus, status) {
+			return _.includes(!_.isArray(status) ? [status] : status, taskStatus)
+		},
+		selectProject (option) {
+			this.filter.project = option
+		},
+		selectIteration (option) {
+			this.filter.iteration = option
+		},
+		taskDetailsClosed () {
+			this.$router.replace(`/tasks`)
+		}
+	},
+	watch: {
+		'$route.params.task' (to, from) {
+			if (to) {
+				this.taskDetails = true
+				return true
+			}
+			this.taskDetails = false
+		}
+	}
 }
 </script>
 
@@ -190,10 +194,6 @@ export default {
 
 		        <b-table-column field="task.title" label="Title" sortable>
 		            {{ props.row.task.title }}
-		        </b-table-column>
-
-		        <b-table-column field="task.description" label="Description" sortable>
-		            {{ props.row.task.description }}
 		        </b-table-column>
 
 		        <b-table-column field="task.status" label="Status" sortable>

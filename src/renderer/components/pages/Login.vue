@@ -1,27 +1,32 @@
 <script>
-	export default {
-	  data () {
-	    return {
-	      email: null,
-	      password: null,
-	      remember: false
-	    }
-  },
-	  methods: {
-	    loginUser () {
-	      this.$store.dispatch('loginUser', { email: this.email, password: this.password })
-	    }
-	  }
+export default {
+	data () {
+		return {
+			email: null,
+			password: null,
+			remember: false,
+			isLoading: false
+		}
+	},
+	methods: {
+		loginUser () {
+			this.isLoading = true
+			this.$store.dispatch('loginUser', { email: this.email, password: this.password })
+				.then((response) => {
+					this.isLoading = false
+				})
+		}
 	}
+}
 </script>
 
 <template>
 	<div id="login">
-		<form class="box" id="login-form" @submit.prevent="loginUser">
+		<form id="login-form" @submit.prevent="loginUser">
 			<h3 class="title is-3">Login</h3>
 			<label for="email" class="label">E-mail Address:</label>
 			<div class="control">
-				<input type="text" class="input" name="email" id="email" placeholder="Enter your E-mail Address" v-model="email">
+				<Input v-model="email" placeholder="Enter your E-mail Address"></Input>
 			</div>
 			<label for="email" class="label">Password:</label>
 			<div class="control">
@@ -47,7 +52,7 @@
 				</div>
 				<div class="level-right">
 					<div class="level-item">
-						<button type="submit" class="button is-primary">
+						<button type="submit" class="button is-primary" :class="{ 'is-loading': isLoading }">
 							Login
 						</button>
 					</div>

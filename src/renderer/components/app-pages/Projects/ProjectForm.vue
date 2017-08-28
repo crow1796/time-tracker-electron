@@ -34,8 +34,8 @@
 			    <b-input type="textarea" placeholder="Enter Project Description" v-model="ticket.description"></b-input>
 			</b-field>
 			<div class="field">
-			    <b-checkbox>Create Asana Project</b-checkbox>
-			    <b-checkbox>Create Git Project</b-checkbox>
+			    <b-checkbox>Create Asana Board</b-checkbox>
+			    <b-checkbox>Create Git Repo</b-checkbox>
 			</div>
 			<div class="has-text-right">
 				<button type="submit" class="button is-primary">

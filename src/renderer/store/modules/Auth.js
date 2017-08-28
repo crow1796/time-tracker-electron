@@ -19,17 +19,17 @@ const getters = {
 
 const actions = {
     loginUser (context, params) {
-        Vue.http.post(`${API_URL}/api/v1/login`, params)
+        return Vue.http.post(`${API_URL}/api/v1/login`, params)
                 .then((response) => {
-                    if(response.data.status){
+                    if(response.data.token){
                         context.commit('USER_AUTH_STATUS', true)
+                        if (router.currentRoute.query.redirect) {
+                            router.push(router.currentRoute.query.redirect)
+                            return true
+                        }
+                        router.push('/')
                     }
                 })
-        if (router.currentRoute.query.redirect) {
-            router.push(router.currentRoute.query.redirect)
-            return true
-        }
-        router.push('/')
     },
     logoutUser (context, params) {
         context.commit('USER_AUTH_STATUS', false)
