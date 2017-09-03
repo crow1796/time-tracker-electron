@@ -16,64 +16,80 @@
 			</div>
 		</div>
 		<div id="logged-in" v-if="isLoggedIn">
+			<Spin fix v-if="pageLoading"></Spin>
 			<div class="layout" :class="{'layout-hide-text': spanLeft < 5}">
 		        <Row type="flex">
 		            <Col :span="spanLeft" class="layout-menu-left">
-		                <Menu active-name="1" theme="dark" width="auto">
+		                <Menu :active-name="selectedProject" theme="dark" width="auto" @on-select="selectProject">
 		                    <div class="layout-logo-left"></div>
-		                    <Submenu name="1">
-                                <template slot="title">
-                                    <Icon type="ios-navigate"></Icon>
-                                    <span class="layout-text">Projects</span>
-                                </template>
-                                <MenuItem name="1-1">LawFormsUSA</MenuItem>
-                                <MenuItem name="1-2">PDFRun</MenuItem>
-                                <MenuItem name="1-3">PassportUSA</MenuItem>
-                                <MenuItem name="1-4">Oill.io</MenuItem>
-                                <MenuItem name="1-5">PDFFormPro</MenuItem>
-                            </Submenu>
+                             <MenuGroup title="Projects">
+                             	<MenuItem :key="project.id" :name="project.id" v-for="(project, index) in projects">
+                             		<Icon type="document-text"></Icon>
+                             		{{ project.title }}
+                             	</MenuItem>
+                             </MenuGroup>
 		                </Menu>
 		            </Col>
 		            <Col :span="spanRight">
 		                <div class="layout-header">
-		                    <Menu mode="horizontal" theme="light" active-name="1">
+		                    <Menu mode="horizontal" theme="light" :active-name="selectedTeam" @on-select="headerMenuChanged">
 	                            <Submenu name="1">
 	                                <template slot="title">
-	                                    <Icon type="stats-bars"></Icon>
-	                                    Baytech
+	                                    <Icon type="home"></Icon>
+	                                    {{ selectedTeam ? teams[selectedTeamIndex].name : '' }}
 	                                </template>
 	                                <MenuGroup title="Teams">
-	                                    <MenuItem name="1-1">Syntactics</MenuItem>
-	                                    <MenuItem name="1-2">Team 1</MenuItem>
+	                                    <MenuItem :name="team.id" :key="team.id" v-for="(team, index) in teams">{{ team.name }}</MenuItem>
 	                                </MenuGroup>
 	                                <MenuGroup title="Options">
-	                                    <MenuItem name="1-4">Create New Team</MenuItem>
-	                                    <MenuItem name="1-5">Settings</MenuItem>
+	                                    <MenuItem name="create_team">Create New Team</MenuItem>
+	                                    <MenuItem name="team_settings">Settings</MenuItem>
 	                                </MenuGroup>
 	                            </Submenu>
 	                            <Submenu name="2">
 	                                <template slot="title">
-	                                    <Icon type="stats-bars"></Icon>
+	                                    <Icon type="android-person"></Icon>
 	                                    Joshua Tundag
 	                                </template>
-	                                <MenuItem name="2-1">Settings</MenuItem>
-                                    <MenuItem name="2-2" @on-select="logoutUser">Logout</MenuItem>
+	                                <MenuItem name="account_settings">Settings</MenuItem>
+                                    <MenuItem name="logout">Logout</MenuItem>
 	                            </Submenu>
+                        	    <Poptip
+                                    confirm
+                                    title="Continue creating new Iteration?"
+                                    @on-ok="createIteration"
+                                    ok-text="Yes"
+                                    cancel-text="No"
+                                    placement="bottom">
+                                    <Button type="default" shape="circle" icon="ios-plus-outline">New Iteration</Button>
+                                </Poptip>
 	                        </Menu>
 		                </div>
 		                <div class="layout-breadcrumb">
 		                    <Breadcrumb>
-		                        <BreadcrumbItem href="#">Baytech</BreadcrumbItem>
-		                        <BreadcrumbItem>LawFormsUSA</BreadcrumbItem>
+		                        <BreadcrumbItem href="">{{ teams[selectedTeamIndex] ? teams[selectedTeamIndex].name : '' }}</BreadcrumbItem>
+		                        <BreadcrumbItem>
+                    				<AutoComplete
+    					        	        v-model="iteration"
+    					        	        :data="iterations"
+    					        	        @on-search="searchIteration"
+    					        	        placeholder="Search an Iteration"
+    					        	        icon="arrow-down-b"
+    					        	        style="width: 75px;">
+    								</AutoComplete>
+		                        </BreadcrumbItem>
+		                        <BreadcrumbItem v-if="selectedProject">{{ selectedProject ? projects[selectedProjectIndex].title : '' }}</BreadcrumbItem>
 		                    </Breadcrumb>
 		                </div>
 		                <div class="layout-content">
+							<Spin fix v-if="contentLoading"></Spin>
 		                    <transition name="fade" mode="out-in">
 		                    	<router-view class="view" 
 		                    			keep-alive
 		                    			transition
 		                    			transition-mode="in-out">
 		                    	</router-view>
+		                    	
 		                    </transition>
 		                </div>
 		            </Col>
@@ -84,25 +100,67 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import _ from 'lodash'
+
 export default {
 	name: 'my-project',
+	created(){
+		this.$store.dispatch('initMenus')
+			.then((response) => {
+				this.iteration = _.last(this.iterations)
+			})
+	},
 	data(){
 		return {
 			spanLeft: 5,
-            spanRight: 19
+            spanRight: 19,
+            iteration: null
 		}
 	},
-	computed: {
-		isLoggedIn () {
-			return this.$store.getters.isLoggedIn
-		},
-		iconSize () {
-		    return this.spanLeft === 5 ? 14 : 24;
-		}
-	},
+	computed: mapGetters({
+		teams: 'getTeams',
+		projects: 'getProjects',
+		selectedTeam: 'getSelectedTeam',
+		selectedProject: 'getSelectedProject',
+		selectedTeamIndex: 'getSelectedTeamIndex',
+		selectedProjectIndex: 'getSelectedProjectIndex',
+		iterations: 'getIterations',
+		isLoggedIn: 'isLoggedIn',
+		pageLoading: 'getPageLoading',
+		contentLoading: 'getContentLoading',
+		iconSize: (this.spanLeft === 5 ? 14 : 24)
+	}),
 	methods: {
-		logoutUser () {
-			this.$store.dispatch('logoutUser')
+		selectProject(project){
+			this.$router.replace(`/tracker/${this.selectedTeam}/${project}`)
+		},
+		selectTeam(team){
+			this.$router.replace(`/tracker/${team}`)
+		},
+		headerMenuChanged(e){
+			switch(e){
+				case 'logout':
+					this.$store.dispatch('logoutUser')
+				break;
+				case 'create_team':
+				break;
+				case 'team_settings':
+				break;
+				case 'account_settings':
+				break;
+				case 'logout':
+				break;
+				default:
+					this.selectTeam(e)
+				break;
+			}
+		},
+		searchIteration(query){
+			
+		},
+		createIteration(){
+
 		}
 	}
 }
@@ -125,6 +183,7 @@ export default {
 		overflow: hidden;
 		background: #fff;
 		border-radius: 4px;
+		padding: 15px;
 	}
 	.layout-content-main{
 		padding: 10px;

@@ -76,7 +76,9 @@ let webConfig = {
           fallback: 'style-loader',
           use: ['css-loader', 'sass-loader']
         })
-      }
+      },
+      { test: /iview.src.*?js$/, loader: 'babel-loader' },
+      { test: /\.js$/, loader: 'babel-loader', exclude: /node_modules/ }
     ]
   },
   plugins: [
