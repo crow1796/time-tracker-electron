@@ -27,7 +27,7 @@ export default {
 
 <style lang="scss" scoped>
 	.tag{
-		font-size: 0.7em;
+		font-size: 0.9em;
 		padding: 4px;
 		color: white;
 		border-radius: 30px;

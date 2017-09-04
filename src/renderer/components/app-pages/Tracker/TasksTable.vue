@@ -49,33 +49,7 @@
 				        		switchModel: params.selected
 				        	},
 				        	on: {
-				        		change: (val, task) => {
-				        			task.selected = val
-									this.$store.commit('CONTENT_LOADING', true)
-									_.map(this.tableData, (row) => {
-										if(row.id === task.id) return false
-										if(row.timer){
-											row.timer.pause()
-											task.status = 'PAUSED'
-											row.selected = false
-										}
-									})
-
-									task.timer = task.timer ? task.timer : new EasyTimer()
-									task.timer.addEventListener('secondsUpdated', (e) => {
-									    task.timerModel = task.timer.getTimeValues().toString()
-									})
-
-									if (task.selected) {
-										task.timer.start()
-										task.status = 'IN PROGRESS'
-										this.$store.commit('CONTENT_LOADING', false)
-										return true
-									}
-									task.timer.pause()
-									task.status = 'PAUSED'
-									this.$store.commit('CONTENT_LOADING', false)
-								}
+				        		change: this.taskTimerChanged
 				        	}
 				        })
 				    }
@@ -114,8 +88,35 @@
 			hideTaskDetails(){
 				this.$router.replace(`/tracker/${this.selectedTeam}/${this.selectedProject}/${this.selectedIteration}`)
 			},
-			startTimer(){
-				
+			startTimer(val){
+				console.log(val)
+			},
+			taskTimerChanged(val, task){
+    			task.selected = val
+				this.$store.commit('CONTENT_LOADING', true)
+				_.map(this.tableData, (row) => {
+					if(row.id === task.id) return false
+					if(row.timer){
+						row.timer.pause()
+						task.status = 'PAUSED'
+						row.selected = false
+					}
+				})
+
+				task.timer = task.timer ? task.timer : new EasyTimer()
+				task.timer.addEventListener('secondsUpdated', (e) => {
+				    task.timerModel = task.timer.getTimeValues().toString()
+				})
+
+				if (task.selected) {
+					task.timer.start()
+					task.status = 'IN PROGRESS'
+					this.$store.commit('CONTENT_LOADING', false)
+					return true
+				}
+				task.timer.pause()
+				task.status = 'PAUSED'
+				this.$store.commit('CONTENT_LOADING', false)
 			}
 		}
 	}
@@ -133,7 +134,10 @@
 	        @on-cancel="hideTaskDetails"
 	        ok-text="Start!"
 	        v-if="selectedTask">
-	        <p>{{ selectedTask }}</p>
+	        <p>
+	        	<div><strong>Description:</strong></div>
+	        	{{ selectedTask.description }}
+	        </p>
 	    </Modal>
 	</div>
 </template>

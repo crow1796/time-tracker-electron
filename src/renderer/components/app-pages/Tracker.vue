@@ -43,7 +43,7 @@ export default {
 		}
 	},
 	methods: {
-		createIteration(){
+		createTask(){
 
 		}
 	}
@@ -56,12 +56,12 @@ export default {
 		    <div class="tracker-filter-fields _no-padding" v-if="projects.length && selectedProject">
     		    <Poptip
     	            confirm
-    	            title="Continue creating new Iteration?"
-    	            @on-ok="createIteration"
+    	            title="Continue creating new Task?"
+    	            @on-ok="createTask"
     	            ok-text="Yes"
     	            cancel-text="No"
     	            placement="right-start">
-    	            <Button type="default" shape="circle" icon="ios-plus-outline">New Iteration</Button>
+    	            <Button type="default" shape="circle" icon="ios-plus-outline">New Task</Button>
     	        </Poptip>
 		    	<tasks-table></tasks-table>
 		    </div>
