@@ -1,47 +1,47 @@
 <script>
 export default {
-	data () {
-		return {
-			isLoading: false,
-			loginData: {
-				email: null,
-				password: null,
-				remember: false
-			},
-			rules: {
-				email: [
-					{
-						required: true,
-						message: 'E-mail Address is required.'
-					}
-				],
-				password: [
-					{
-						required: true,
-						message: 'Password is required.'
-					}
-				]
-			}
-		}
-	},
-	methods: {
-		loginUser () {
-			this.$refs.loginForm.validate((valid) => {
-                if (valid) {
-                    this.$Message.success('Logging in...')
-                } else {
-                    this.$Message.error('Please fill in the required data.')
-                }
-            })
-			this.isLoading = true
-			this.$store.dispatch('loginUser', this.loginData)
+  data () {
+    return {
+      isLoading: false,
+      loginData: {
+        email: null,
+        password: null,
+        remember: false
+      },
+      rules: {
+        email: [
+          {
+            required: true,
+            message: 'E-mail Address is required.'
+          }
+        ],
+        password: [
+          {
+            required: true,
+            message: 'Password is required.'
+          }
+        ]
+      }
+    }
+  },
+  methods: {
+    loginUser () {
+      this.$refs.loginForm.validate((valid) => {
+        if (valid) {
+          this.$Message.success('Logging in...')
+        } else {
+          this.$Message.error('Please fill in the required data.')
+        }
+      })
+      this.isLoading = true
+      this.$store.dispatch('loginUser', this.loginData)
 				.then((response) => {
-					this.isLoading = false
-					if(response.data.token) this.$Message.success('Logged in Successfully!')
-					this.$router.push('/')
-				})
-		}
-	}
+  this.isLoading = false
+  if (response.data.token) this.$Message.success('Logged in Successfully!')
+  this.$router.push('/')
+})
+    }
+  }
 }
 </script>
 

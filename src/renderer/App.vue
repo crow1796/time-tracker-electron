@@ -85,26 +85,26 @@
 
 <script>
 export default {
-	name: 'my-project',
-	data(){
-		return {
-			spanLeft: 5,
-            spanRight: 19
-		}
-	},
-	computed: {
-		isLoggedIn () {
-			return this.$store.getters.isLoggedIn
-		},
-		iconSize () {
-		    return this.spanLeft === 5 ? 14 : 24;
-		}
-	},
-	methods: {
-		logoutUser () {
-			this.$store.dispatch('logoutUser')
-		}
-	}
+  name: 'my-project',
+  data () {
+    return {
+      spanLeft: 5,
+      spanRight: 19
+    }
+  },
+  computed: {
+    isLoggedIn () {
+      return this.$store.getters.isLoggedIn
+    },
+    iconSize () {
+		    return this.spanLeft === 5 ? 14 : 24
+    }
+  },
+  methods: {
+    logoutUser () {
+      this.$store.dispatch('logoutUser')
+    }
+  }
 }
 </script>
 
