@@ -92,11 +92,11 @@
 				console.log(val)
 			},
 			taskTimerChanged(val, task){
+    			// this.tableData[(_.findIndex(this.tableData, {id: task.id}))].selected = val
     			task.selected = val
 				this.$store.commit('CONTENT_LOADING', true)
 				_.map(this.tableData, (row) => {
-					if(row.id === task.id) return false
-					if(row.timer){
+					if(row.timer && row.id != task.id){
 						row.timer.pause()
 						task.status = 'PAUSED'
 						row.selected = false

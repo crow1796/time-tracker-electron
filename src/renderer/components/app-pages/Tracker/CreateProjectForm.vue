@@ -1,20 +1,36 @@
 <script>
+import {mapGetters} from 'vuex'
 export default {
 	name: 'create-project-form',
-	props: {
-		modalStatus: {
-			type: Boolean,
-			default: false
-		}
-	},
 	data () {
 		return {
 			newProject: {
 				title: null
 			},
-			projectFormModal: this.modalStatus
+			projectFormModal: false
 		}
 	},
+	methods: {
+		open(){
+			this.projectFormModal = true
+		},
+		close(){
+			this.newProject = {
+				title: null
+			}
+			this.projectFormModal = false
+		},
+		createProject(){
+			this.$store.commit('PAGE_LOADING', true)
+			this.$store.dispatch('createProject', this.newProject)
+				.then((response) => {
+					this.$router.replace(`/tracker/${this.selectedTeam}/${response.data.project.id}`)
+				})
+		}
+	},
+	computed: mapGetters({
+		selectedTeam: 'selectedTeam'
+	}),
 	watch: {
 		'ticket.title' (to, from) {
 			this.ticket.branch_name = '{Ticket #}_' + (to.trim().toLowerCase()).replace(/\W/g, '_')
@@ -26,10 +42,11 @@ export default {
 <template>
 	<Modal
         title="Create New Project"
-        v-model="modalStatus"
+        v-model="projectFormModal"
         :mask-closable="false"
         :closable="false"
-        @on-cancel="modalStatus = false">
+        @on-cancel="close"
+        @on-ok="createProject">
         <div>
         	<Form :model="newProject" label-position="left" :label-width="100">
     	        <FormItem label="Title">
@@ -39,3 +56,9 @@ export default {
         </div>
     </Modal>
 </template>
+
+<style lang="scss" scoped>
+	.ivu-form-item{
+		margin-bottom: 0;
+	}
+</style>

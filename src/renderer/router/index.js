@@ -24,7 +24,7 @@ const router = new Router({
           alias: '/',
           children: [
             { path: '/tracker/:team', component: Tracker },    
-            { path: '/tracker/:team/:project', component: Tracker },    
+            { path: '/tracker/:team/:project', component: Tracker },
             { path: '/tracker/:team/:project/:iteration', component: Tracker },
             { path: '/tracker/:team/:project/:iteration/:task', component: Tracker }
           ]

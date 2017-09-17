@@ -27,7 +27,7 @@ const actions = {
     },
     logoutUser (context, params) {
         context.commit('PAGE_LOADING', true)
-        localStorage.removeItem('jwtToken')
+        localStorage.clear()
         context.commit('USER_AUTH_STATUS', false)
         setTimeout(() => {
             router.push('/login')

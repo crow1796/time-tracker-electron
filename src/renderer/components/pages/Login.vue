@@ -34,6 +34,7 @@ export default {
 				.then((response) => {
 				    if(response.data.token){
 				    	this.$Message.success('Logged in Successfully!')
+				    	localStorage.clear()
 				    	localStorage.setItem('jwtToken', response.data.token)
 				        this.$store.commit('USER_AUTH_STATUS', true)
 				        if (this.$router.currentRoute.query.redirect) {
@@ -44,8 +45,8 @@ export default {
 				        return true
 				    }
 				    this.$Message.destroy()
-					let errors = ''
-					_.map(response.data.error, (error) => errors += `<li>${error}</li>`)
+					let errors = !_.isArray(response.data.error) ? response.data.error : ''
+					if(_.isArray(response.data.error)) _.map(response.data.error, (error) => errors += `<li>${error}</li>`)
 				    this.$Notice.error({
                         title: 'Login failed!',
                         desc: `<ul>${errors}</ul>`

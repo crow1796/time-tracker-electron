@@ -27,25 +27,27 @@
                              		<Icon type="document-text"></Icon>
                              		{{ project.title }}
                              	</MenuItem>
+                             	<div class="text-center project-menu-add">
+                             		<Button type="error" long @click="$refs.createProjectForm.open()">
+                             			<Icon type="android-add"></Icon>
+                             			Create Project
+                             		</Button>
+                             	</div>
                              </MenuGroup>
 		                </Menu>
 		            </Col>
 		            <Col :span="spanRight">
 		                <div class="layout-header">
 		                    <Menu mode="horizontal" theme="light" :active-name="selectedTeam" @on-select="headerMenuChanged">
-	                            <Submenu name="1">
-	                                <template slot="title">
-	                                    <Icon type="home"></Icon>
-	                                    {{ selectedTeam ? teams[selectedTeamIndex].name : '' }}
-	                                </template>
-	                                <MenuGroup title="Teams">
-	                                    <MenuItem :name="team.id" :key="team.id" v-for="(team, index) in teams">{{ team.name }}</MenuItem>
-	                                </MenuGroup>
-	                                <MenuGroup title="Options">
-	                                    <MenuItem name="create_team">Create New Team</MenuItem>
-	                                    <MenuItem name="team_settings">Settings</MenuItem>
-	                                </MenuGroup>
-	                            </Submenu>
+                    		    <Poptip
+                    	            confirm
+                    	            title="Continue creating new Iteration?"
+                    	            @on-ok="createIteration"
+                    	            ok-text="Yes"
+                    	            cancel-text="No"
+                    	            placement="bottom">
+                    	            <Button type="default" shape="circle" icon="ios-plus-outline">New Iteration</Button>
+                    	        </Poptip>
 	                            <Submenu name="2">
 	                                <template slot="title">
 	                                    <Icon type="android-person"></Icon>
@@ -54,31 +56,53 @@
 	                                <MenuItem name="account_settings">Settings</MenuItem>
                                     <MenuItem name="logout">Logout</MenuItem>
 	                            </Submenu>
-                        	    <Poptip
-                                    confirm
-                                    title="Continue creating new Iteration?"
-                                    @on-ok="createIteration"
-                                    ok-text="Yes"
-                                    cancel-text="No"
-                                    placement="bottom">
-                                    <Button type="default" shape="circle" icon="ios-plus-outline">New Iteration</Button>
-                                </Poptip>
 	                        </Menu>
 		                </div>
 		                <div class="layout-breadcrumb">
 		                    <Breadcrumb>
-		                        <BreadcrumbItem href="">{{ teams[selectedTeamIndex] ? teams[selectedTeamIndex].name : '' }}</BreadcrumbItem>
 		                        <BreadcrumbItem>
-                    				<AutoComplete
-    					        	        v-model="iteration"
-    					        	        :data="iterations"
-    					        	        @on-search="searchIteration"
-    					        	        placeholder="Search an Iteration"
-    					        	        icon="arrow-down-b"
-    					        	        style="width: 75px;">
-    								</AutoComplete>
+		                        	<BreadcrumbItem>
+		                        		<Poptip v-model="teamSearchVisible" placement="bottom">
+		                        			{{ teams[selectedTeamIndex] ? teams[selectedTeamIndex].name : '' }}
+	                        		        <Icon type="arrow-down-b"></Icon>
+	                        		        <div slot="title"><i>Teams</i></div>
+	                        		        <div slot="content">
+	                            				<AutoComplete
+	            					        	        @on-search="searchTeam"
+	            					        	        @on-select="selectTeam"
+	            					        	        placeholder="Select a Team"
+	            					        	        icon="arrow-down-b">
+    					        	                    <Option v-for="team in teams" :value="team.name" :key="team.id">
+    					        	                        <span class="demo-auto-complete-title">{{ team.name }}</span>
+    					        	                    </Option>
+	            								</AutoComplete>
+	                        		        </div>
+	                        		    </Poptip>
+		                        	</BreadcrumbItem>
 		                        </BreadcrumbItem>
-		                        <BreadcrumbItem v-if="selectedProject">{{ selectedProject ? projects[selectedProjectIndex].title : '' }}</BreadcrumbItem>
+		                        <BreadcrumbItem v-if="iteration">
+	                        		<Poptip v-model="iterationSearchVisible" placement="bottom">
+	                        			{{ iteration }}
+                        		        <Icon type="arrow-down-b"></Icon>
+                        		        <div slot="title"><i>Sprints/Iterations</i></div>
+                        		        <div slot="content">
+			                				<AutoComplete
+			                						v-model="iteration"
+								        	        :data="iterations"
+								        	        @on-search="searchIteration"
+								        	        @on-select="selectIteration"
+								        	        placeholder="Search an Iteration"
+								        	        icon="arrow-down-b">
+											</AutoComplete>
+                        		        </div>
+                        		    </Poptip>
+		                        </BreadcrumbItem>
+		                        <BreadcrumbItem v-if="selectedProject">
+		                        	{{ selectedProject ? projects[selectedProjectIndex].title : '' }}
+		                        	<Button type="text" size="small">
+		                        		<Icon type="wrench"></Icon>
+		                        	</Button>
+		                        </BreadcrumbItem>
 		                    </Breadcrumb>
 		                </div>
 		                <div class="layout-content">
@@ -95,6 +119,7 @@
 		            </Col>
 		        </Row>
 		    </div>
+		    <create-project-form ref="createProjectForm"></create-project-form>
 		</div>
 	</div>
 </template>
@@ -102,20 +127,26 @@
 <script>
 import { mapGetters } from 'vuex'
 import _ from 'lodash'
+import CreateProjectForm from '@/components/app-pages/Tracker/CreateProjectForm.vue'
 
 export default {
 	name: 'my-project',
+	components: {
+		CreateProjectForm
+	},
 	created(){
 		this.$store.dispatch('initMenus')
 			.then((response) => {
-				this.iteration = _.last(this.iterations)
+				this.iteration = _.head(this.iterations)
 			})
 	},
 	data(){
 		return {
 			spanLeft: 5,
             spanRight: 19,
-            iteration: null
+            iteration: null,
+            teamSearchVisible: false,
+            iterationSearchVisible: false
 		}
 	},
 	computed: mapGetters({
@@ -136,6 +167,9 @@ export default {
 			this.$router.replace(`/tracker/${this.selectedTeam}/${project}`)
 		},
 		selectTeam(team){
+			team = _.find(this.teams, {name: team})
+			team = team.id
+			this.teamSearchVisible = false
 			this.$router.replace(`/tracker/${team}`)
 		},
 		headerMenuChanged(e){
@@ -159,14 +193,20 @@ export default {
 		searchIteration(query){
 			
 		},
+		selectIteration(iteration){
+			this.iterationSearchVisible = false
+		},
+		searchTeam(query){
+
+		},
 		createIteration(){
 
-		}
+		},
 	}
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
 	.layout{
 		border: 1px solid #d7dde4;
 		background: #f5f7f9;
@@ -200,6 +240,14 @@ export default {
 		height: 60px;
 		background: #fff;
 		box-shadow: 0 1px 1px rgba(0,0,0,.1);
+		
+		.ivu-menu-submenu{
+			float: right;
+		}
+
+		.ivu-poptip.ivu-poptip-confirm{
+			padding-left: 20px;
+		}
 	}
 	.layout-logo-left{
 		width: 90%;
@@ -216,5 +264,10 @@ export default {
 	}
 	.ivu-col{
 		transition: width .2s ease-in-out;
+	}
+	.project-menu-add{
+		.ivu-btn{
+			border-radius: 0;
+		}
 	}
 </style>
