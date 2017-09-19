@@ -18,23 +18,22 @@ const getters = {
 }
 
 const actions = {
-  loginUser (context, params) {
-    return Vue.http.post(`${API_URL}/api/v1/login`, params)
-                .then((response) => {
-                  if (response.data.token) {
-                    context.commit('USER_AUTH_STATUS', true)
-                    if (router.currentRoute.query.redirect) {
-                      router.push(router.currentRoute.query.redirect)
-                      return response
-                    }
-                  }
-                  return response
-                })
-  },
-  logoutUser (context, params) {
-    context.commit('USER_AUTH_STATUS', false)
-    router.push('/login')
-  }
+
+    checkAuth({ commit }){
+        let token = localStorage.getItem('jwtToken')
+        if(token) commit('USER_AUTH_STATUS', true)
+    },
+    loginUser (context, params) {
+        return Vue.http.post(`${API_URL}/api/v1/login`, params)
+    },
+    logoutUser (context, params) {
+        context.commit('PAGE_LOADING', true)
+        localStorage.removeItem('jwtToken')
+        context.commit('USER_AUTH_STATUS', false)
+        setTimeout(() => {
+            router.push('/login')
+        }, 1500)
+    }
 }
 
 export default {

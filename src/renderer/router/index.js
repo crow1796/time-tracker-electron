@@ -4,42 +4,49 @@ import Home from '@/components/pages/Home'
 import Login from '@/components/pages/Login'
 import Register from '@/components/pages/Register'
 import ForgotPassword from '@/components/pages/ForgotPassword'
-import Tasks from '@/components/app-pages/Tasks'
-import Projects from '@/components/app-pages/Projects'
-import Team from '@/components/app-pages/Team'
+import Tracker from '@/components/app-pages/Tracker'
 import Page404 from '@/components/pages/404'
 import Middlewares from '@/middlewares'
 import NProgress from 'nprogress'
+import iView from 'iview'
 
 Vue.use(Router)
 
 const router = new Router({
   routes: [
-        { path: '/', component: Home, beforeEnter: Middlewares.redirectIfNotAuth },
         { path: '/login', component: Login, beforeEnter: Middlewares.redirectIfAuthenticated },
         { path: '/register', component: Register, beforeEnter: Middlewares.redirectIfAuthenticated },
         { path: '/forgot-password', component: ForgotPassword, beforeEnter: Middlewares.redirectIfAuthenticated },
     {
-      path: '/tasks',
-      component: Tasks,
+      path: '/tracker',
+      component: Tracker,
       beforeEnter: Middlewares.redirectIfNotAuth,
+      alias: '/',
       children: [
-                { path: '/tasks/:task', component: Tasks }
+            { path: '/tracker/:team', component: Tracker },
+            { path: '/tracker/:team/:project', component: Tracker },
+            { path: '/tracker/:team/:project/:iteration', component: Tracker },
+            { path: '/tracker/:team/:project/:iteration/:task', component: Tracker }
       ]
     },
-        { path: '/projects', component: Projects, beforeEnter: Middlewares.redirectIfNotAuth },
-        { path: '/team', component: Team, beforeEnter: Middlewares.redirectIfNotAuth },
         { path: '/404', component: Page404 },
         { path: '*', redirect: '/404' }
   ]
 })
+
+iView.LoadingBar.config({
+  color: '#2d8cf0',
+  failedColor: '#f0ad4e',
+  height: 3
+})
+
 router.beforeEach((to, from, next) => {
-  NProgress.start()
+  iView.LoadingBar.start()
   next()
 })
 
-router.afterEach((to, from) => {
-  NProgress.done()
+router.afterEach((to, from, next) => {
+  iView.LoadingBar.finish()
 })
 
 export default router
