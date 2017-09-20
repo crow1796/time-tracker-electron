@@ -1,39 +1,40 @@
 <script>
 import _ from 'lodash'
 export default {
-	data () {
-		return {
-			isLoading: false,
-			loginData: {
-				email: null,
-				password: null,
-				remember: false
-			},
-			rules: {
-				email: [
-					{
-						required: true,
-						message: 'E-mail Address is required.'
-					}
-				],
-				password: [
-					{
-						required: true,
-						message: 'Password is required.'
-					}
-				]
-			}
-		}
-	},
-	methods: {
-		loginUser () {
-			this.$Notice.close()
-            this.$Message.success('Logging in...')
-			this.isLoading = true
-			this.$store.dispatch('loginUser', this.loginData)
+  data () {
+    return {
+      isLoading: false,
+      loginData: {
+        email: null,
+        password: null,
+        remember: false
+      },
+      rules: {
+        email: [
+          {
+            required: true,
+            message: 'E-mail Address is required.'
+          }
+        ],
+        password: [
+          {
+            required: true,
+            message: 'Password is required.'
+          }
+        ]
+      }
+    }
+  },
+  methods: {
+    loginUser () {
+      this.$Notice.close()
+      this.$Message.success('Logging in...')
+      this.isLoading = true
+      this.$store.dispatch('loginUser', this.loginData)
 				.then((response) => {
-				    if(response.data.token){
+				    if (response.data.token) {
 				    	this.$Message.success('Logged in Successfully!')
+				    	localStorage.clear()
 				    	localStorage.setItem('jwtToken', response.data.token)
 				        this.$store.commit('USER_AUTH_STATUS', true)
 				        if (this.$router.currentRoute.query.redirect) {
@@ -44,16 +45,16 @@ export default {
 				        return true
 				    }
 				    this.$Message.destroy()
-					let errors = ''
-					_.map(response.data.error, (error) => errors += `<li>${error}</li>`)
+  let errors = !_.isArray(response.data.error) ? response.data.error : ''
+  if (_.isArray(response.data.error)) _.map(response.data.error, (error) => errors += `<li>${error}</li>`)
 				    this.$Notice.error({
-                        title: 'Login failed!',
-                        desc: `<ul>${errors}</ul>`
-                    })
+      title: 'Login failed!',
+      desc: `<ul>${errors}</ul>`
+    })
 				    this.isLoading = false
-				})
-		}
-	}
+})
+    }
+  }
 }
 </script>
 

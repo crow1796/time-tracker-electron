@@ -5,48 +5,28 @@ import _ from 'lodash'
 import CreateProjectForm from './Tracker/CreateProjectForm.vue'
 
 export default {
-  components: {
-    TasksTable,
-    CreateProjectForm
-  },
-  data () {
-    return {
-      createProjectModal: false
-    }
-  },
-  computed: mapGetters({
-    teams: 'getTeams',
-    projects: 'getProjects',
-    selectedTeam: 'getSelectedTeam',
-    selectedProject: 'getSelectedProject',
-    selectedTeamIndex: 'getSelectedTeamIndex',
-    selectedProjectIndex: 'getSelectedProjectIndex'
-  }),
-  watch: {
-    '$route.params.team' (to, from) {
-      if (!to) return false
-      this.$store.commit('PAGE_LOADING', true)
-      this.$store.commit('SELECTED_TEAM', to)
-      this.$store.dispatch('getProjectsOfSelectedTeam')
-			    .then((response) => {
-			        this.$store.commit('PAGE_LOADING', false)
-			    })
+    components: {
+        TasksTable,
+        CreateProjectForm
     },
-    '$route.params.project' (to, from) {
-      if (!to) return false
-      this.$store.commit('CONTENT_LOADING', true)
-      this.$store.commit('SELECTED_PROJECT', to)
-      this.$store.commit('CONTENT_LOADING', false)
+    data () {
+        return {
+            createProjectModal: false
+        }
     },
-    '$route.params.iteration' (to, from) {
-      if (!to) return false
-    }
-  },
-  methods: {
-    createTask () {
+    computed: mapGetters({
+        teams: 'getTeams',
+        projects: 'getProjects',
+        selectedTeam: 'getSelectedTeam',
+        selectedProject: 'getSelectedProject',
+        selectedTeamIndex: 'getSelectedTeamIndex',
+        selectedProjectIndex: 'getSelectedProjectIndex'
+    }),
+    methods: {
+        createTask () {
 
+        }
     }
-  }
 }
 </script>
 
@@ -64,11 +44,18 @@ export default {
     	            <Button type="default" shape="circle" icon="ios-plus-outline">New Task</Button>
     	        </Poptip>
 		    	<tasks-table></tasks-table>
+		    	<div class="task-view-toggle">
+		    		<Tooltip content="Board View" placement="left">
+	    				<div class="toggle">
+	    					<Icon type="ios-list-outline"></Icon>
+	    				</div>
+		            </Tooltip>
+		    	</div>
 		    </div>
 
 		    <div v-if="!projects.length && !selectedProject">
-            	<h1 class="text-center">You don't have any projects yet. <Button type="primary" shape="circle" size="small" icon="ios-plus-outline" @click="createProjectModal = true">Create New</Button></h1>
-            	<create-project-form :modal-status="createProjectModal"></create-project-form>
+            	<h1 class="text-center">You don't have any projects yet.</h1>
+            	<create-project-form ref="createProjectForm"></create-project-form>
 		    </div>
 		</div>
 	</div>
@@ -101,5 +88,25 @@ export default {
         .ivu-modal{
             top: 0;
         }
+    }
+
+    .task-view-toggle{
+    	position: fixed;
+    	top: 110px;
+    	right: 0;
+    	z-index: 5;
+
+    	.toggle{
+    		cursor: pointer;
+    		background: #464c5b;
+    		color: white;
+    		width: 40px;
+    		height: 40px;
+    		text-align: center;
+    		line-height: 40px;
+    		border-top-left-radius: 3px;
+    		border-bottom-left-radius: 3px;
+    		font-size: 1.7em;
+    	}
     }
 </style>
