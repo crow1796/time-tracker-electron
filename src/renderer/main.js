@@ -21,6 +21,18 @@ Vue.config.lang = 'en-US'
 Vue.use(iView, { locale })
 
 store.dispatch('checkAuth')
+	.then((response) => {
+	    let data = response.data;
+	    console.log(response)
+	    if (response.status == 404) {
+	        router.go('/');
+	    } else if (response.status == 401 && response.data.refreshed_token) {
+	        localStorage.setItem('jwtToken', response.data.refreshed_token)
+	    } else if (response.data.token_expired){
+	        router.replace('/logout');
+	    }
+	    store.commit('USER_AUTH_STATUS', true)
+	})
 axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('jwtToken')
 
 /* eslint-disable no-new */

@@ -1,6 +1,9 @@
 <script>
 	import {mapGetters} from 'vuex'
 	export default {
+		created(){
+			this.projectSettings.title = this.projects[this.selectedProjectIndex].title
+		},
 		data(){
 			return {
 				projectSettings: {
@@ -43,11 +46,6 @@
 	        selectedTeamIndex: 'getSelectedTeamIndex',
 	        selectedProjectIndex: 'getSelectedProjectIndex'
 	    }),
-		watch: {
-			selectedProjectIndex(to, from){
-				this.projectSettings.title = this.projects[this.selectedProjectIndex].title
-			}
-		},
 		methods: {
 			removeMemberFromProject(member){
 				console.log(member)

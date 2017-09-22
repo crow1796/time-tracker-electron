@@ -27,3 +27,9 @@ body {
 .ivu-spin-fix{
 	position: fixed !important;
 }
+
+.ivu-menu-vertical .ivu-menu-item, .ivu-menu-vertical .ivu-menu-submenu-title{
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}

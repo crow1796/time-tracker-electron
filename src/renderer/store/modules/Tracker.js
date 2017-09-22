@@ -106,6 +106,9 @@ const actions = {
                       return response
                     })
     },
+    getTasksOfSelectedProject(context, params){
+      
+    },
     createProject (context, params) {
         return Vue.http.post(`${API_URL}/api/v1/teams/${context.getters.getSelectedTeam}/projects/create`, params)
     }
