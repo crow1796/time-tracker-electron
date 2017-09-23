@@ -20,8 +20,9 @@ const getters = {
 const actions = {
 
   checkAuth ({ commit }) {
-    let token = localStorage.getItem('jwtToken')
-    if (token) commit('USER_AUTH_STATUS', true)
+        let token = localStorage.getItem('jwtToken')
+        if (!token) return false
+        return Vue.http.get(`${API_URL}/api/v1/user`)
   },
   loginUser (context, params) {
     return Vue.http.post(`${API_URL}/api/v1/login`, params)
