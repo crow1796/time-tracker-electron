@@ -12,6 +12,7 @@ import filters from './filters'
 import App from './App'
 import router from './router'
 import store from './store'
+import Directives from './directives'
 
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.http = Vue.prototype.$http = axios

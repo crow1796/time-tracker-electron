@@ -65,7 +65,16 @@
 		                        		<Poptip v-model="teamSearchVisible" placement="bottom">
 		                        			{{ teams[selectedTeamIndex] ? teams[selectedTeamIndex].name : '' }}
 	                        		        <Icon type="arrow-down-b"></Icon>
-	                        		        <div slot="title"><i>Teams</i></div>
+	                        		        <div slot="title">
+                        		        		<Row>
+                    		        		        <Col span="12">
+                    		        		        	<i>Teams</i>
+                    		        		    	</Col>
+                    		        		        <Col span="12" class-name="text-right">
+	                        		        			<Button size="small" icon="gear-a"></Button>
+	                    		        		    </Col>
+                    		        		    </Row>
+	                        		        </div>
 	                        		        <div slot="content">
 	                            				<AutoComplete
 	            					        	        @on-search="searchTeam"
