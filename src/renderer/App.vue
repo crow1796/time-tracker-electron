@@ -143,11 +143,11 @@ export default {
   components: {
     CreateProjectForm
   },
-  created () {
-    this.$store.dispatch('initMenus')
+	created () {
+		this.$store.dispatch('initMenus')
 			.then((response) => {
-  this.iteration = _.head(this.iterations)
-})
+		this.iteration = _.head(this.iterations)
+	})
   },
   data () {
     return {

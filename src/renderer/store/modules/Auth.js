@@ -2,23 +2,29 @@ import router from '@/router'
 import Vue from 'vue'
 
 const state = {
-  isLoggedIn: false
+  isLoggedIn: false,
+  user: null
 }
 
 const mutations = {
   USER_AUTH_STATUS (state, status) {
     state.isLoggedIn = status
+  },
+  USER(state, user){
+    state.users = user
   }
 }
 
 const getters = {
   isLoggedIn (state) {
     return state.isLoggedIn
+  },
+  getUser(state){
+    return state.user
   }
 }
 
 const actions = {
-
   checkAuth ({ commit }) {
         let token = localStorage.getItem('jwtToken')
         if (!token) return false
