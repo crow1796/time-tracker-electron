@@ -1,4 +1,5 @@
 import router from '@/router'
+import store from '@/store'
 import Vue from 'vue'
 
 const state = {
@@ -11,7 +12,7 @@ const mutations = {
     state.isLoggedIn = status
   },
   USER(state, user){
-    state.users = user
+    state.user = user
   }
 }
 
@@ -29,6 +30,28 @@ const actions = {
         let token = localStorage.getItem('jwtToken')
         if (!token) return false
         return Vue.http.get(`${API_URL}/api/v1/user`)
+                  .then((response) => {
+                    let data = response.data
+                    if (response.status == 404) {
+                        router.go('/login')
+                    } else if (response.status == 401 && data && data.refreshed_token) {
+                        localStorage.setItem('jwtToken', data.refreshed_token)
+                    } else if (data && data.token_expired){
+                        router.replace('/logout')
+                    }
+                    if(data && data.user){
+                        store.commit('USER', data.user)
+                        store.commit('USER_AUTH_STATUS', true)
+                        return response
+                    }
+                  }, (error) => {
+                    let data = error.data;
+                    if(!data.refreshed_token && error.status == 401){
+                        router.replace('/logout');
+                        return false;
+                    }
+                    // Auth Failed message here
+                  })
   },
   loginUser (context, params) {
     return Vue.http.post(`${API_URL}/api/v1/login`, params)

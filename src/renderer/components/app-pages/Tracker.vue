@@ -1,12 +1,12 @@
 <script>
-import TasksTable from './Tracker/TasksTable.vue'
+import TasksList from './Tracker/TasksList.vue'
 import {mapGetters} from 'vuex'
 import _ from 'lodash'
 import CreateProjectForm from './Tracker/CreateProjectForm.vue'
 
 export default {
     components: {
-        TasksTable,
+        TasksList,
         CreateProjectForm
     },
     data () {
@@ -43,7 +43,7 @@ export default {
     	            placement="right-start">
     	            <Button type="default" shape="circle" icon="ios-plus-outline">New Task</Button>
     	        </Poptip>
-		    	<tasks-table></tasks-table>
+		    	<tasks-list></tasks-list>
 		    	<div class="task-view-toggle">
 		    		<Tooltip content="Board View" placement="left">
 	    				<div class="toggle">

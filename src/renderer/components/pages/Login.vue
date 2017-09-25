@@ -36,6 +36,7 @@ export default {
 				    	this.$Message.success('Logged in Successfully!')
 				    	localStorage.clear()
 				    	localStorage.setItem('jwtToken', response.data.token)
+				    	this.$store.commit('USER', response.data.user)
 				        this.$store.commit('USER_AUTH_STATUS', true)
 				        if (this.$router.currentRoute.query.redirect) {
 				            this.$router.push(this.$router.currentRoute.query.redirect)

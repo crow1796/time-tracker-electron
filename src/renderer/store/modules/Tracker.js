@@ -111,6 +111,9 @@ const actions = {
     },
     createProject (context, params) {
         return Vue.http.post(`${API_URL}/api/v1/teams/${context.getters.getSelectedTeam}/projects/create`, params)
+    },
+    createTeam (context, params) {
+        return Vue.http.post(`${API_URL}/api/v1/teams/create`, params)
     }
 }
 

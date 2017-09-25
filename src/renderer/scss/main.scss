@@ -33,3 +33,17 @@ body {
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
+
+.ivu-modal-content{
+	border-radius: 0;
+}
+
+.new-iteration-btn{
+	.ivu-poptip {
+		float: right;
+	}
+
+	.ivu-poptip-popper{
+		min-width: 250px;
+	}
+}
