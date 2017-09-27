@@ -1,5 +1,8 @@
 <template>
 	<div id="app">
+		<detect-network @detected-condition="connectionDetected">
+			<div slot="offline">Your Offline Content!</div>
+		</detect-network>
 		<div id="not-logged-in" v-if="!isLoggedIn">
 			<div class="container">
 				<div class="columns">
@@ -167,12 +170,14 @@ import { mapGetters } from 'vuex'
 import _ from 'lodash'
 import CreateProjectForm from '@/components/app-pages/Tracker/CreateProjectForm.vue'
 import CreateTeamForm from '@/components/app-pages/Tracker/CreateTeamForm.vue'
+import detectNetwork from 'v-offline';
 
 export default {
 	name: 'my-project',
 	components: {
 		CreateProjectForm,
-		CreateTeamForm
+		CreateTeamForm,
+		detectNetwork
 	},
 	created () {
 		this.$store.dispatch('initMenus')
@@ -206,6 +211,9 @@ export default {
 		user: 'getUser'
 	}),
 	methods: {
+		connectionDetected(e){
+			this.$store.commit('CONNECTIVITY', e)
+		},
 		selectProject (project) {
 			this.$router.replace(`/tracker/${this.selectedTeam}/${project}`)
 		},
