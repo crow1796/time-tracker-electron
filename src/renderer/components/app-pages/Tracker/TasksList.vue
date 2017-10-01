@@ -6,13 +6,13 @@
 	import {mapGetters} from 'vuex'
 
 export default {
-	name: 'tasks-list',
-	components: {
-		StatusBadge
-	},
-	data () {
-		return {
-			tasks: [
+	  name: 'tasks-list',
+	  components: {
+	    StatusBadge
+	  },
+	  data () {
+	    return {
+	      tasks: [
 				{'id': 202901, 'title': 'MUST HAVE: Customer Dashboard > Delete Feature', 'description': 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quasi fugiat quod voluptatem, ullam, modi facilis nesciunt impedit quaerat minus sapiente aspernatur voluptatibus accusantium ipsa voluptate temporibus nihil eligendi nisi eaque. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quas laborum veniam ipsum minima voluptatem consequatur, delectus saepe reiciendis pariatur ea ad velit, totam ut dolor voluptatum eius iste repellat porro.', status: 'NOT YET STARTED', timer: null, timerModel: null, selected: false, checked: false},
 				{'id': 202902, 'title': 'Task #2', 'description': 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolorum quo fugiat doloremque repudiandae nostrum aut voluptatum sit, earum quae mollitia possimus omnis enim explicabo quis repellendus, corrupti! Alias, distinctio amet!', status: 'NOT YET STARTED', timer: null, timerModel: null, selected: false, checked: false},
 				{'id': 202903, 'title': 'Task #3', 'description': 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Temporibus eum doloribus neque at fuga ut voluptate, nesciunt iste eaque quasi nisi recusandae quis libero suscipit deserunt sapiente dicta provident amet.', status: 'NOT YET STARTED', timer: null, timerModel: null, selected: false, checked: false},
@@ -23,60 +23,60 @@ export default {
 				{'id': 202908, 'title': 'Task #8', 'description': 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Similique quasi libero consequuntur consectetur quis amet aspernatur velit tempora, perferendis reiciendis vel quod fuga obcaecati nostrum fugiat eveniet. Exercitationem debitis, quaerat.', status: 'NOT YET STARTED', timer: null, timerModel: null, selected: false, checked: false},
 				{'id': 202909, 'title': 'Task #9', 'description': 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus veritatis repudiandae fugit quas explicabo quae obcaecati maxime natus vitae libero, veniam odio quibusdam aut cupiditate facilis consequuntur! Animi, tempora, dicta.', status: 'NOT YET STARTED', timer: null, timerModel: null, selected: false, checked: false},
 				{'id': 202910, 'title': 'Task #10', 'description': 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sunt aspernatur numquam et, reprehenderit mollitia ducimus accusamus, blanditiis itaque rem deserunt dicta aliquam explicabo cum! Perferendis eaque ut eum recusandae velit.', status: 'NOT YET STARTED', timer: null, timerModel: null, selected: false, checked: false}
-			],
-			showTaskDetails: false,
-			selectedTask: null,
-			checkedTasks: []
-		}
-	},
-	computed: mapGetters({
-		selectedTeam: 'getSelectedTeam',
-		selectedProject: 'getSelectedProject',
-		selectedIteration: 'getSelectedIteration'
-	}),
-	watch: {
-		'$route.params.task' (to, from) {
-			if (!to) return false
-			this.$store.commit('CONTENT_LOADING', true)
-			this.showTaskDetails = true
-			this.selectedTask = _.find(this.tasks, {id: parseInt(to)})
-			this.$store.commit('CONTENT_LOADING', false)
-		}
-	},
-	methods: {
-		hideTaskDetails () {
-			this.$router.replace(`/tracker/${this.selectedTeam}/${this.selectedProject}/${this.selectedIteration}`)
-		},
-		startTimer (val) {
-			this.taskTimerChanged(this.selectedTask)
-		},
-		taskTimerChanged (task) {
-			this.$store.commit('CONTENT_LOADING', true)
-			_.map(this.tasks, (row) => {
-				if (row.timer && row.id != task.id) {
-					row.timer.pause()
-					row.status = 'PAUSED'
-					row.selected = false
-				}
-			})
+	      ],
+	      showTaskDetails: false,
+	      selectedTask: null,
+	      checkedTasks: []
+	    }
+	  },
+	  computed: mapGetters({
+	    selectedTeam: 'getSelectedTeam',
+	    selectedProject: 'getSelectedProject',
+	    selectedIteration: 'getSelectedIteration'
+	  }),
+	  watch: {
+	    '$route.params.task' (to, from) {
+	      if (!to) return false
+	      this.$store.commit('CONTENT_LOADING', true)
+	      this.showTaskDetails = true
+	      this.selectedTask = _.find(this.tasks, {id: parseInt(to)})
+	      this.$store.commit('CONTENT_LOADING', false)
+	    }
+	  },
+	  methods: {
+	    hideTaskDetails () {
+	      this.$router.replace(`/tracker/${this.selectedTeam}/${this.selectedProject}/${this.selectedIteration}`)
+	    },
+	    startTimer (val) {
+	      this.taskTimerChanged(this.selectedTask)
+	    },
+	    taskTimerChanged (task) {
+	      this.$store.commit('CONTENT_LOADING', true)
+	      _.map(this.tasks, (row) => {
+	        if (row.timer && row.id != task.id) {
+	          row.timer.pause()
+	          row.status = 'PAUSED'
+	          row.selected = false
+	        }
+	      })
 
-			task.timer = task.timer ? task.timer : new EasyTimer()
-			task.timer.addEventListener('secondsUpdated', (e) => {
-				task.timerModel = task.timer.getTimeValues().toString()
-			})
+	      task.timer = task.timer ? task.timer : new EasyTimer()
+	      task.timer.addEventListener('secondsUpdated', (e) => {
+	        task.timerModel = task.timer.getTimeValues().toString()
+	      })
 
-			if (task.selected) {
-				task.timer.start()
-				task.status = 'IN PROGRESS'
-				this.$store.commit('CONTENT_LOADING', false)
-				return true
-			}
+	      if (task.selected) {
+	        task.timer.start()
+	        task.status = 'IN PROGRESS'
+	        this.$store.commit('CONTENT_LOADING', false)
+	        return true
+	      }
 
-			task.timer.pause()
-			task.status = 'PAUSED'
-			this.$store.commit('CONTENT_LOADING', false)
-		}
-	}
+	      task.timer.pause()
+	      task.status = 'PAUSED'
+	      this.$store.commit('CONTENT_LOADING', false)
+	    }
+	  }
 }
 </script>
 

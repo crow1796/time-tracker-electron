@@ -1,5 +1,6 @@
 <script>
 import _ from 'lodash'
+import Vue from 'vue'
 export default {
   data () {
     return {
@@ -36,6 +37,7 @@ export default {
 				    	this.$Message.success('Logged in Successfully!')
 				    	localStorage.clear()
 				    	localStorage.setItem('jwtToken', response.data.token)
+				    	Vue.http.defaults.headers.common['Authorization'] = 'Bearer ' + response.data.token
 				    	this.$store.commit('USER', response.data.user)
 				        this.$store.commit('USER_AUTH_STATUS', true)
 				        if (this.$router.currentRoute.query.redirect) {

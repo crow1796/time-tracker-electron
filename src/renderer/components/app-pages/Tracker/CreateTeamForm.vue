@@ -4,40 +4,34 @@ import _ from 'lodash'
 export default {
     name: 'create-team-form',
     data () {
-    return {
-        newTeam: {
-            name: null
-        },
-        teamFormModal: false
-    }
+        return {
+            newTeam: {
+                name: null
+            },
+            teamFormModal: false
+        }
     },
     methods: {
         open () {
-            this.teamFormModal = true
+          this.teamFormModal = true
         },
         close () {
-            this.newTeam = {
-                name: null
-            }
-            this.teamFormModal = false
+          this.newTeam = {
+            name: null
+          }
+          this.teamFormModal = false
         },
         createTeam () {
             this.$store.commit('PAGE_LOADING', true)
             this.$store.dispatch('createTeam', this.newTeam)
-                .then((response) => {
+            .then((response) => {
                     this.$store.dispatch('initMenus')
-                            .then((response) => {
-                            })
-                    // if(response.data.status){
-                    //     this.$store.dispatch('getProjectsOfSelectedTeam')
-                    //             .then((res) => {
-                    //                 this.$router.replace(`/tracker/${response.data.project.team_id}/${response.data.project.id}`)
-                    //                 window.scrollTo(0, 0)
-                    //                 this.close()
-                    //                 this.$store.commit('PAGE_LOADING', false)
-                    //             })
-                    // }
-            })
+                        .then((response) => {
+                            this.newTeam = {
+                                name: null
+                            }
+                        })
+                })
         }
     },
     computed: mapGetters({

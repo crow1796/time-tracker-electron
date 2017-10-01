@@ -1,49 +1,47 @@
 <script>
 import {mapGetters} from 'vuex'
 export default {
-    name: 'create-project-form',
-    data () {
+  name: 'create-project-form',
+  data () {
     return {
-        newProject: {
-            title: null
-        },
-        projectFormModal: false
+      newProject: {
+        title: null
+      },
+      projectFormModal: false
     }
+  },
+  methods: {
+    open () {
+      this.projectFormModal = true
     },
-    methods: {
-        open () {
-            this.projectFormModal = true
-        },
-        close () {
-            this.newProject = {
-                title: null
-            }
-            this.projectFormModal = false
-        },
-        createProject () {
-            this.$store.commit('PAGE_LOADING', true)
-            this.$store.dispatch('createProject', this.newProject)
+    close () {
+      this.newProject = {
+        title: null
+      }
+      this.projectFormModal = false
+    },
+    createProject () {
+      this.$store.commit('PAGE_LOADING', true)
+      this.$store.dispatch('createProject', this.newProject)
                 .then((response) => {
-                    if(response.data.status){
-                        this.$store.dispatch('getProjectsOfSelectedTeam')
+                  if (response.data.status) {
+                    this.$store.dispatch('getProjectsOfSelectedTeam')
                                 .then((res) => {
-                                    this.$router.replace(`/tracker/${response.data.project.team_id}/${response.data.project.id}`)
-                                    window.scrollTo(0, 0)
-                                    this.close()
-                                    this.$store.commit('PAGE_LOADING', false)
+                                  this.$router.replace(`/tracker/${response.data.project.team_id}/${response.data.project.id}`)
+                                  window.scrollTo(0, 0)
+                                  this.close()
+                                  this.newProject = {
+                                    title: null
+                                  }
+                                  this.$store.commit('PAGE_LOADING', false)
                                 })
-                    }
-            })
-        }
-    },
-    computed: mapGetters({
-        selectedTeam: 'getSelectedTeam'
-    }),
-    watch: {
-        'ticket.title' (to, from) {
-            this.ticket.branch_name = '{Ticket #}_' + (to.trim().toLowerCase()).replace(/\W/g, '_')
-        }
+                  }
+                })
     }
+  },
+  computed: mapGetters({
+    selectedTeam: 'getSelectedTeam'
+  })
 }
 </script>
 

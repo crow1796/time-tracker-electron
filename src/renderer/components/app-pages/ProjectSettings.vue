@@ -1,56 +1,56 @@
 <script>
 	import {mapGetters} from 'vuex'
 	export default {
-		created(){
-			this.projectSettings.title = this.projects[this.selectedProjectIndex].title
-		},
-		data(){
-			return {
-				projectSettings: {
-					title: null,
-					description: null
-				},
-				members: [
-					{
-						id: 1,
-						first_name: 'Joshua',
-						last_name: 'Tundag',
-						role: 'Administrator'
-					},
-					{
-						id: 2,
-						first_name: 'Kirsty',
-						last_name: 'Falle',
-						role: 'Watergirl'
-					},
-					{
-						id: 2,
-						first_name: 'Kirsty',
-						last_name: 'Falle',
-						role: 'Watergirl'
-					},
-					{
-						id: 2,
-						first_name: 'Kirsty',
-						last_name: 'Falle',
-						role: 'Watergirl'
-					}
-				]
-			}
-		},
-		computed: mapGetters({
-	        teams: 'getTeams',
-	        projects: 'getProjects',
-	        selectedTeam: 'getSelectedTeam',
-	        selectedProject: 'getSelectedProject',
-	        selectedTeamIndex: 'getSelectedTeamIndex',
-	        selectedProjectIndex: 'getSelectedProjectIndex'
-	    }),
-		methods: {
-			removeMemberFromProject(member){
-				console.log(member)
-			}
-		}
+	  created () {
+	    this.projectSettings.title = this.projects[this.selectedProjectIndex].title
+	  },
+	  data () {
+	    return {
+	      projectSettings: {
+	        title: null,
+	        description: null
+	      },
+	      members: [
+	        {
+	          id: 1,
+	          first_name: 'Joshua',
+	          last_name: 'Tundag',
+	          role: 'Administrator'
+	        },
+	        {
+	          id: 2,
+	          first_name: 'Kirsty',
+	          last_name: 'Falle',
+	          role: 'Watergirl'
+	        },
+	        {
+	          id: 2,
+	          first_name: 'Kirsty',
+	          last_name: 'Falle',
+	          role: 'Watergirl'
+	        },
+	        {
+	          id: 2,
+	          first_name: 'Kirsty',
+	          last_name: 'Falle',
+	          role: 'Watergirl'
+	        }
+	      ]
+	    }
+	  },
+	  computed: mapGetters({
+	    teams: 'getTeams',
+	    projects: 'getProjects',
+	    selectedTeam: 'getSelectedTeam',
+	    selectedProject: 'getSelectedProject',
+	    selectedTeamIndex: 'getSelectedTeamIndex',
+	    selectedProjectIndex: 'getSelectedProjectIndex'
+	  }),
+	  methods: {
+	    removeMemberFromProject (member) {
+	      console.log(member)
+	    }
+	  }
 	}
 </script>
 

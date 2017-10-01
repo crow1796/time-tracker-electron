@@ -1,29 +1,29 @@
 import store from '@/store'
 
 export default {
-    redirectIfNotAuth (to, from, next) {
-        store.dispatch('checkAuth')
+  redirectIfNotAuth (to, from, next) {
+    store.dispatch('checkAuth')
             .then((response) => {
-                if (!store.getters.isLoggedIn) {
-                    next({
-                        path: '/login',
-                        query: { redirect: to.fullPath }
-                    })
-                    return true
-                }
+              if (!store.getters.isLoggedIn) {
+                next({
+                  path: '/login',
+                  query: { redirect: to.fullPath }
+                })
+                return true
+              }
             })
-        next()
-    },
-    redirectIfAuthenticated (to, from, next) {
-        store.dispatch('checkAuth')
+    next()
+  },
+  redirectIfAuthenticated (to, from, next) {
+    store.dispatch('checkAuth')
             .then((response) => {
-                if (store.getters.isLoggedIn) {
-                  next({
-                    path: '/'
-                  })
-                  return true
-                }
+              if (store.getters.isLoggedIn) {
+                next({
+                  path: '/'
+                })
+                return true
+              }
             })
-        next()
-    }
+    next()
+  }
 }

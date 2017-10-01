@@ -1,7 +1,7 @@
 <template>
 	<div id="app">
-		<detect-network @detected-condition="connectionDetected">
-			<div slot="offline">Your Offline Content!</div>
+		<detect-network offline-class="no-connection">
+		    <div slot="offline">You are offline.</div>
 		</detect-network>
 		<div id="not-logged-in" v-if="!isLoggedIn">
 			<div class="container">
@@ -170,92 +170,92 @@ import { mapGetters } from 'vuex'
 import _ from 'lodash'
 import CreateProjectForm from '@/components/app-pages/Tracker/CreateProjectForm.vue'
 import CreateTeamForm from '@/components/app-pages/Tracker/CreateTeamForm.vue'
-import detectNetwork from 'v-offline';
+import detectNetwork from 'v-offline'
 
 export default {
-	name: 'my-project',
-	components: {
-		CreateProjectForm,
-		CreateTeamForm,
-		detectNetwork
-	},
+  name: 'my-project',
+  components: {
+    CreateProjectForm,
+    CreateTeamForm,
+    detectNetwork
+  },
 	created () {
-		this.$store.dispatch('initMenus')
-				.then((response) => {
-					this.iteration = _.head(this.iterations)
-				})
-	},
-	data () {
-		return {
-			spanLeft: 5,
-			spanRight: 19,
-			iteration: null,
-			teamSearchVisible: false,
-			iterationSearchVisible: false,
-			globalQuery: null
-		}
-	},
-	computed: mapGetters({
-		teams: 'getTeams',
-		projects: 'getProjects',
-		selectedTeam: 'getSelectedTeam',
-		selectedProject: 'getSelectedProject',
-		selectedTeamIndex: 'getSelectedTeamIndex',
-		selectedProjectIndex: 'getSelectedProjectIndex',
-		iterations: 'getIterations',
-		isLoggedIn: 'isLoggedIn',
-		pageLoading: 'getPageLoading',
-		contentLoading: 'getContentLoading',
-		connectivity: 'getConnectivity',
-		iconSize: (this.spanLeft === 5 ? 14 : 24),
-		user: 'getUser'
-	}),
-	methods: {
-		connectionDetected(e){
-			this.$store.commit('CONNECTIVITY', e)
-		},
-		selectProject (project) {
-			this.$router.replace(`/tracker/${this.selectedTeam}/${project}`)
-		},
-		selectTeam (team) {
-			team = _.find(this.teams, {name: team})
-			team = team.id
-			this.teamSearchVisible = false
-			this.$router.replace(`/tracker/${team}`)
-		},
-		headerMenuChanged (e) {
-			switch (e) {
-				case 'logout':
-					this.$store.dispatch('logoutUser')
-					break
-				case 'create_team':
-					break
-				case 'team_settings':
-					break
-				case 'account_settings':
-					break
-				case 'logout':
-					break
-				default:
-					this.selectTeam(e)
-					break
-			}
-		},
-		searchIteration (query) {
-
-		},
-		selectIteration (iteration) {
-			this.iterationSearchVisible = false
-		},
-		searchTeam (query) {
-
-		},
-		createIteration () {
-
+		if(!this.isLoggedIn){
+			this.$store.commit('PAGE_LOADING', false)
+			this.$store.commit('CONTENT_LOADING', false)
 		}
   },
+  data () {
+    return {
+      spanLeft: 5,
+      spanRight: 19,
+      iteration: null,
+      teamSearchVisible: false,
+      iterationSearchVisible: false,
+      globalQuery: null
+    }
+  },
+  computed: mapGetters({
+    teams: 'getTeams',
+    projects: 'getProjects',
+    selectedTeam: 'getSelectedTeam',
+    selectedProject: 'getSelectedProject',
+    selectedTeamIndex: 'getSelectedTeamIndex',
+    selectedProjectIndex: 'getSelectedProjectIndex',
+    iterations: 'getIterations',
+    isLoggedIn: 'isLoggedIn',
+    pageLoading: 'getPageLoading',
+    contentLoading: 'getContentLoading',
+    connectivity: 'getConnectivity',
+    iconSize: (this.spanLeft === 5 ? 14 : 24),
+    user: 'getUser'
+  }),
+methods: {
+	connectionDetected (e) {
+		this.$store.commit('CONNECTIVITY', e)
+	},
+    selectProject (project) {
+      this.$router.replace(`/tracker/${this.selectedTeam}/${project}`)
+    },
+    selectTeam (team) {
+      team = _.find(this.teams, {name: team})
+      team = team.id
+      this.teamSearchVisible = false
+      this.$router.replace(`/tracker/${team}`)
+    },
+    headerMenuChanged (e) {
+      switch (e) {
+        case 'logout':
+          this.$store.dispatch('logoutUser')
+          break
+        case 'create_team':
+          break
+        case 'team_settings':
+          break
+        case 'account_settings':
+          break
+        case 'logout':
+          break
+        default:
+          this.selectTeam(e)
+          break
+      }
+    },
+    searchIteration (query) {
+
+    },
+    selectIteration (iteration) {
+      this.iterationSearchVisible = false
+    },
+    searchTeam (query) {
+
+    },
+    createIteration () {
+
+    }
+  },
   watch: {
-	'$route.params.team' (to, from) {
+    '$route.params.team' (to, from) {
 		if (!to) return false
 		this.$store.commit('PAGE_LOADING', true)
 		this.$store.commit('SELECTED_TEAM', to)
@@ -263,15 +263,24 @@ export default {
 			.then((response) => {
 				this.$store.commit('PAGE_LOADING', false)
 			})
-	},
-	'$route.params.project' (to, from) {
+    },
+    '$route.params.project' (to, from) {
 		if (!to) return false
 		this.$store.commit('CONTENT_LOADING', true)
 		this.$store.commit('SELECTED_PROJECT', to)
 		this.$store.commit('CONTENT_LOADING', false)
-	},
-	'$route.params.iteration' (to, from) {
+    },
+    '$route.params.iteration' (to, from) {
 		if (!to) return false
+		this.$store.commit('CONTENT_LOADING', true)
+		this.$store.commit('SELECTED_ITERATION', to)
+		this.$store.commit('CONTENT_LOADING', false)
+    },
+	'isLoggedIn'(to, from){
+		this.$store.dispatch('initMenus')
+				.then((response) => {
+				this.iteration = _.head(this.iterations)
+			})
 	}
   }
 }

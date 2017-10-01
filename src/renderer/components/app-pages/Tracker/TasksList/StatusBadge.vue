@@ -1,60 +1,53 @@
 <script>
 import _ from 'lodash'
 export default {
-  name: 'status-badge',
-  props: {
-    status: {
-      default: null
+    name: 'status-badge',
+    props: {
+        status: {
+            default: null
+        }
+    },
+    created(){
+        this.tagColors = {
+            'NOT YET STARTED': '#969696',
+            'IN PROGRESS': '#2d8cf0',
+            'CODE REVIEW': '#2d8cf0',
+            'REQUEST MERGE': '#2d8cf0',
+            'TEST-DEV': '#19be6b',
+            'TEST-STAGING': '#19be6b',
+            'TEST-MASTER': '#19be6b',
+            'REVIEWING': '#ff9900',
+            'PAUSED': '#ff9900',
+            'RE-OPEN': '#ed3f14',
+            'WITH DEFECTS': '#ed3f14',
+            'PROCESSING': '#ed3f14',
+            'CLOSED': '#2d2d2d'
+        }
+    },
+    data(){
+        return {
+            tagColors: null
+        }
+    },
+    computed: {
+        'tagColor'(){
+            return this.tagColors[this.status]
+        }
     }
-  },
-  methods: {
-    __taskStatusIs (taskStatus, status) {
-      return _.includes(!_.isArray(status) ? [status] : status, taskStatus)
-    }
-  }
 }
 </script>
 
 <template>
-	<span class="tag" :class="{ 
-	'-dark': __taskStatusIs(status, ['NOT YET STARTED']),
-	'-black': __taskStatusIs(status, ['CLOSED']), 
-	'-primary': __taskStatusIs(status, ['IN PROGRESS', 'CODE REVIEW', 'REQUEST MERGE']), '-success': __taskStatusIs(status, ['TEST-DEV', 'TEST-STAGING', 'TEST-MASTER']), 
-	'-warning': __taskStatusIs(status, ['REVIEWING', 'PAUSED']), 
-	'-danger': __taskStatusIs(status, ['RE-OPEN', 'WITH DEFECTS', 'PROCESSING'])
-	}">{{ status }}</span>
+	<span class="tag" :style="{ backgroundColor: tagColor }">
+		{{ status }}
+	</span>
 </template>
 
 <style lang="scss" scoped>
-	.tag{
-		font-size: 0.9em;
-		padding: 4px;
-		color: white;
-		border-radius: 30px;
-		
-		&.-dark{
-			background: #969696;
-		}
-
-		&.-black{
-			background: #2d2d2d;
-		}
-
-		&.-primary{
-			background: #2d8cf0;
-		}
-
-		&.-success{
-			background: #19be6b;
-		}
-
-		&.-warning{
-			background: #ff9900;
-		}
-
-		&.-danger{
-			background: #ed3f14;
-		}
-
-	}
+    .tag{
+        font-size: 0.9em;
+        padding: 4px;
+        color: white;
+        border-radius: 4px;
+    }
 </style>

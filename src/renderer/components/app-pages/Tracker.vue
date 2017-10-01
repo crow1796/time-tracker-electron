@@ -3,11 +3,13 @@ import TasksList from './Tracker/TasksList.vue'
 import {mapGetters} from 'vuex'
 import _ from 'lodash'
 import CreateProjectForm from './Tracker/CreateProjectForm.vue'
+import CreateTaskForm from './Tracker/CreateTaskForm.vue'
 
 export default {
     components: {
         TasksList,
-        CreateProjectForm
+        CreateProjectForm,
+        CreateTaskForm
     },
     data () {
         return {
@@ -23,8 +25,8 @@ export default {
         selectedProjectIndex: 'getSelectedProjectIndex'
     }),
     methods: {
-        createTask () {
-
+        createIteration(){
+            this.$store.dispatch('createIterationForSelectedProject')
         }
     }
 }
@@ -34,15 +36,18 @@ export default {
 	<div id="tasks">
 		<div class="tasks">
 		    <div class="tracker-filter-fields _no-padding" v-if="projects.length && selectedProject">
-    		    <Poptip
-    	            confirm
-    	            title="Continue creating new Task?"
-    	            @on-ok="createTask"
-    	            ok-text="Yes"
-    	            cancel-text="No"
-    	            placement="right-start">
-    	            <Button type="default" shape="circle" icon="ios-plus-outline">New Task</Button>
-    	        </Poptip>
+    		    <div class="text-left">
+                    <Button type="warning" icon="ios-plus-outline" @click="$refs.createTaskForm.open()">New Task</Button> 
+                    <Poptip
+                        confirm
+                        title="Continue creating new Sprint/Iteration?"
+                        @on-ok="createIteration"
+                        ok-text="Yes"
+                        cancel-text="No"
+                        placement="right-start">
+                        <Button type="default" icon="ios-plus-outline">New Sprint/Iteration</Button>
+                    </Poptip>
+                </div>
 		    	<tasks-list></tasks-list>
 		    	<div class="task-view-toggle">
 		    		<Tooltip content="Board View" placement="left">
@@ -55,8 +60,8 @@ export default {
 
 		    <div v-if="!projects.length && !selectedProject">
             	<h1 class="text-center">You don't have any projects yet.</h1>
-            	<create-project-form ref="createProjectForm"></create-project-form>
 		    </div>
+            <create-task-form ref="createTaskForm"></create-task-form>
 		</div>
 	</div>
 </template>

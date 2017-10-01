@@ -14,26 +14,26 @@ import iView from 'iview'
 Vue.use(Router)
 
 const router = new Router({
-    routes: [
+  routes: [
         { path: '/login', component: Login, beforeEnter: Middlewares.redirectIfAuthenticated },
         { path: '/register', component: Register, beforeEnter: Middlewares.redirectIfAuthenticated },
         { path: '/forgot-password', component: ForgotPassword, beforeEnter: Middlewares.redirectIfAuthenticated },
         { path: '/tracker/:team/:project/settings', component: ProjectSettings },
-        {
-          path: '/tracker',
-          component: Tracker,
-          beforeEnter: Middlewares.redirectIfNotAuth,
-          alias: '/',
-          children: [
+    {
+      path: '/tracker',
+      component: Tracker,
+      beforeEnter: Middlewares.redirectIfNotAuth,
+      alias: '/',
+      children: [
                 { path: '/tracker/:team', component: Tracker },
                 { path: '/tracker/:team/:project', component: Tracker },
                 { path: '/tracker/:team/:project/:iteration', component: Tracker },
                 { path: '/tracker/:team/:project/:iteration/:task', component: Tracker }
-          ]
-        },
+      ]
+    },
         { path: '/404', component: Page404 },
         { path: '*', redirect: '/404' }
-    ]
+  ]
 })
 
 iView.LoadingBar.config({
