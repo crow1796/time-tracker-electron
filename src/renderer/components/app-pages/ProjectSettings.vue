@@ -64,7 +64,7 @@
 					        <FormItem label="Project Title">
 					            <Input v-model="projectSettings.title"></Input>
 					        </FormItem>
-					        <FormItem label="Project Title">
+					        <FormItem label="Description">
 					        	<Input v-model="projectSettings.description" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="Description..."></Input>
 					        </FormItem>
 					        <FormItem>
@@ -101,6 +101,9 @@
 						</div>
 					</Col>
 				</Row>
+			</TabPane>
+			<TabPane icon="checkmark" label="Workflow" name="workflow">
+				Workflow
 			</TabPane>
 			<TabPane icon="checkmark" label="Auto-Deploy" name="auto_deploy">
 				Auto Deploy

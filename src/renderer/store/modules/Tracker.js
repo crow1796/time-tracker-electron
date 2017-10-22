@@ -65,6 +65,9 @@ const getters = {
   getSelectedIteration (state) {
     return state.selectedIteration
   },
+  getSelectedIterationIndex (state) {
+    return _.indexOf(state.iterations, state.selectedIteration)
+  },
   getSelectedProjectIndex (state) {
     return _.findIndex(state.projects, {id: state.selectedProject})
   },
@@ -84,7 +87,7 @@ const actions = {
                 context.commit('INIT_TEAMS', teams)
                 let oldSelectedTeam = teams.length && localStorage.getItem('selectedTeam') && _.find(teams, {id: parseInt(localStorage.getItem('selectedTeam'))}) ? parseInt(localStorage.getItem('selectedTeam')) : (_.head(teams) ? _.head(teams).id : null)
                 context.commit('SELECTED_TEAM', oldSelectedTeam)
-
+                if(!oldSelectedTeam) return response
                 context.dispatch('getProjectsOfSelectedTeam')
                     .then((response) => {
                         context.commit('PAGE_LOADING', false)
@@ -100,27 +103,41 @@ const actions = {
                       context.commit('INIT_PROJECTS', projects)
                       let oldSelectedProject = projects.length && localStorage.getItem('selectedProject') && _.find(projects, {id: parseInt(localStorage.getItem('selectedProject'))}) ? parseInt(localStorage.getItem('selectedProject')) : (_.head(projects) ? _.head(projects).id : null)
                       context.commit('SELECTED_PROJECT', oldSelectedProject)
+                      if(!oldSelectedProject) return response
                       context.dispatch('getIterationsFor', oldSelectedProject)
 
                       return response
                     })
     },
-    getTasksOfSelectedProject (context, params) {
-
-    },
     createProject (context, params) {
-        return Vue.http.post(`${API_URL}/api/v1/teams/${context.getters.getSelectedTeam}/projects/create`, params)
+        return Vue.http.post(`${API_URL}/api/v1/teams/${context.getters.getSelectedTeam}/projects/create`, params) 
+                    .then((response) => {
+                      let iterations = _.map(response.data.iterations, 'id')
+                      context.commit('INIT_ITERATIONS', iterations)
+                      let oldSelectedIteration = _.head(iterations)
+                      context.commit('SELECTED_ITERATION', oldSelectedIteration)
+
+                      return response
+                  })
     },
-    getIterationsFor(context, params){
-        return Vue.http.get(`${API_URL}/api/v1/teams/${context.getters.getSelectedTeam}/projects/${params}/iterations/all`)
+    getIterationsFor(context, project){
+        return Vue.http.get(`${API_URL}/api/v1/teams/${context.getters.getSelectedTeam}/projects/${project}/iterations/all`)
                     .then((response) => {
                         let iterations = _.map(response.data.iterations, 'id')
                         context.commit('INIT_ITERATIONS', iterations)
-                        let oldSelectedIteration = iterations.length && localStorage.getItem('selectedIteration') && _.find(iterations, {id: parseInt(localStorage.getItem('selectedIteration'))}) ? parseInt(localStorage.getItem('selectedIteration')) : (_.head(iterations) ? _.head(iterations).id : null)
+                        let oldSelectedIteration = _.head(iterations)
                         context.commit('SELECTED_ITERATION', oldSelectedIteration)
+                        if(!oldSelectedIteration) return response
+                        context.dispatch('getTasksForIteration', oldSelectedIteration)
 
                         return response
                     })
+    },
+    getTasksForIteration(context, iteration){
+        return Vue.http.get(`${API_URL}/api/v1/teams/${context.getters.getSelectedTeam}/projects/${context.getters.getSelectedProject}/iterations/${iteration}/tasks/all`)
+                .then((response) => {
+                    console.log(response)
+                })
     },
     createIterationForSelectedProject(context, params){
         context.commit('CONTENT_LOADING', true)
@@ -129,15 +146,19 @@ const actions = {
                         context.commit('CONTENT_LOADING', false)
                         let iterations = _.map(response.data.iterations, 'id')
                         context.commit('INIT_ITERATIONS', iterations)
-                        let oldSelectedIteration = iterations.length && localStorage.getItem('selectedIteration') && _.find(iterations, {id: parseInt(localStorage.getItem('selectedIteration'))}) ? parseInt(localStorage.getItem('selectedIteration')) : (_.head(iterations) ? _.head(iterations).id : null)
+                        let oldSelectedIteration = _.head(iterations)
                         context.commit('SELECTED_ITERATION', oldSelectedIteration)
 
                         router.replace(`/tracker/${context.getters.getSelectedTeam}/${context.getters.getSelectedProject}/${response.data.iteration.id}`)
                         return response
                     })
     },
-    createTeam (context, params) {
-        return Vue.http.post(`${API_URL}/api/v1/teams/create`, params)
+    createTeam (context, iteration) {
+        return Vue.http.post(`${API_URL}/api/v1/teams/create`, iteration)
+    },
+    changeIteration(context, params){
+        context.commit('SELECTED_ITERATION', to)
+        console.log('getTasks')
     }
 }
 

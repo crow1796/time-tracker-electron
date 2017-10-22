@@ -21,6 +21,7 @@ export default {
         projects: 'getProjects',
         selectedTeam: 'getSelectedTeam',
         selectedProject: 'getSelectedProject',
+        selectedIteration: 'getSelectedIteration',
         selectedTeamIndex: 'getSelectedTeamIndex',
         selectedProjectIndex: 'getSelectedProjectIndex'
     }),

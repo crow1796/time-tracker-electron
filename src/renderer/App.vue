@@ -73,72 +73,62 @@
 		                </div>
 		                <div class="layout-breadcrumb">
 		                    <Breadcrumb>
-		                        <BreadcrumbItem>
-		                        	<BreadcrumbItem v-if="selectedTeam && teams[selectedTeamIndex]">
-		                        		<Poptip v-model="teamSearchVisible" placement="bottom">
-		                        			{{ teams[selectedTeamIndex] ? teams[selectedTeamIndex].name : '' }}
-	                        		        <Icon type="arrow-down-b"></Icon>
-	                        		        <div slot="title">
-                        		        		<Row>
-                    		        		        <Col span="12">
-                    		        		        	<i>Teams</i>
-                    		        		    	</Col>
-                    		        		        <Col span="12" class-name="text-right">
-	                    		        		        <Button size="small" icon="gear-b"></Button>
-	                    		        		    </Col>
-                    		        		    </Row>
-	                        		        </div>
-	                        		        <div slot="content">
-	                            				<AutoComplete
-	            					        	        @on-search="searchTeam"
-	            					        	        @on-select="selectTeam"
-	            					        	        placeholder="Select a Team"
-	            					        	        icon="arrow-down-b">
-    					        	                    <Option v-for="team in teams" :value="team.name" :key="team.id">
-    					        	                        <span class="demo-auto-complete-title">{{ team.name }}</span>
-    					        	                    </Option>
-	            								</AutoComplete>
-	                        		        </div>
-	                        		    </Poptip>
-		                        	</BreadcrumbItem>
-		                        </BreadcrumbItem>
+	                        	<BreadcrumbItem v-if="selectedTeam && teams[selectedTeamIndex]">
+	                        		<Poptip v-model="teamSearchVisible" placement="bottom">
+	                        			{{ teams[selectedTeamIndex] ? teams[selectedTeamIndex].name : '' }}
+                        		        <Icon type="arrow-down-b"></Icon>
+                        		        <div slot="title">
+                    		        		<Row>
+                		        		        <Col span="12">
+                		        		        	<i>Teams</i>
+                		        		    	</Col>
+                		        		        <Col span="12" class-name="text-right">
+                    		        		        <Button size="small" icon="gear-b"></Button>
+                    		        		    </Col>
+                		        		    </Row>
+                        		        </div>
+                        		        <div slot="content">
+                            				<AutoComplete
+            					        	        @on-search="searchTeam"
+            					        	        @on-select="selectTeam"
+            					        	        placeholder="Select a Team"
+            					        	        icon="arrow-down-b">
+					        	                    <Option v-for="team in teams" :value="team.name" :key="team.id">
+					        	                        <span class="demo-auto-complete-title">{{ team.name }}</span>
+					        	                    </Option>
+            								</AutoComplete>
+                        		        </div>
+                        		    </Poptip>
+	                        	</BreadcrumbItem>
 		                        <BreadcrumbItem v-if="selectedProject && projects[selectedProjectIndex]">
 		                        	{{ selectedProject ? projects[selectedProjectIndex].title : '' }}
 		                        	<router-link :to="`/tracker/${selectedTeam}/${selectedProject}/settings`">
 		                        		<Icon type="gear-b"></Icon>
 		                        	</router-link>
 		                        </BreadcrumbItem>
-		                        <BreadcrumbItem v-if="iteration && (selectedProject && projects[selectedProjectIndex])">
+		                        <BreadcrumbItem v-if="selectedIteration && iterations[selectedIterationIndex]">
 	                        		<Poptip v-model="iterationSearchVisible" placement="bottom">
-	                        			{{ iteration }}
+	                        			{{ selectedIteration }}
                         		        <Icon type="arrow-down-b"></Icon>
                         		        <div slot="title">
                     		        		<Row>
                 		        		        <Col span="12">
                 		        		        	<i>Sprints/Iterations</i>
                 		        		    	</Col>
-                		        		        <Col span="12" class-name="new-iteration-btn">
-        				    		    		    <Poptip
-        				    		    	            confirm
-        				    		    	            title="Continue creating new Iteration?"
-        				    		    	            @on-ok="createIteration"
-        				    		    	            ok-text="Yes"
-        				    		    	            cancel-text="No"
-        				    		    	            placement="right">
-		                		        		        <Button size="small" icon="gear-b"></Button>
-        				    		    	            <Button type="error" size="small" icon="plus"></Button>
-        				    		    	        </Poptip>
+                		        		        <Col span="12" class-name="new-iteration-btn text-right">
+	                		        		        <Button size="small" icon="gear-b"></Button>
                     		        		    </Col>
                 		        		    </Row>
                     		        	</div>
                         		        <div slot="content">
 			                				<AutoComplete
-			                						v-model="iteration"
-								        	        :data="iterations"
 								        	        @on-search="searchIteration"
 								        	        @on-select="selectIteration"
 								        	        placeholder="Search an Iteration"
 								        	        icon="arrow-down-b">
+								        	        <Option v-for="(iteration, index) in iterations" :value="iteration" :key="index">
+								        	            <span class="demo-auto-complete-title">{{ iteration }}</span>
+								        	        </Option>
 											</AutoComplete>
                         		        </div>
                         		    </Poptip>
@@ -200,8 +190,10 @@ export default {
     projects: 'getProjects',
     selectedTeam: 'getSelectedTeam',
     selectedProject: 'getSelectedProject',
+    selectedIteration: 'getSelectedIteration',
     selectedTeamIndex: 'getSelectedTeamIndex',
     selectedProjectIndex: 'getSelectedProjectIndex',
+    selectedIterationIndex: 'getSelectedIterationIndex',
     iterations: 'getIterations',
     isLoggedIn: 'isLoggedIn',
     pageLoading: 'getPageLoading',
@@ -215,7 +207,11 @@ methods: {
 		this.$store.commit('CONNECTIVITY', e)
 	},
     selectProject (project) {
-      this.$router.replace(`/tracker/${this.selectedTeam}/${project}`)
+    	this.$store.commit('CONTENT_LOADING', true)
+		this.$store.dispatch('getIterationsFor', project)
+				.then((response) => {
+					this.$router.replace(`/tracker/${this.selectedTeam}/${project}/${this.selectedIteration}`)
+				})
     },
     selectTeam (team) {
       team = _.find(this.teams, {name: team})
@@ -245,7 +241,8 @@ methods: {
 
     },
     selectIteration (iteration) {
-      this.iterationSearchVisible = false
+		this.iterationSearchVisible = false
+		this.$router.replace(`/tracker/${this.selectedTeam}/${this.selectedProject}/${iteration}`)
     },
     searchTeam (query) {
 
@@ -273,7 +270,7 @@ methods: {
     '$route.params.iteration' (to, from) {
 		if (!to) return false
 		this.$store.commit('CONTENT_LOADING', true)
-		this.$store.commit('SELECTED_ITERATION', to)
+		this.$store.dispatch('changeIterationTo', to)
 		this.$store.commit('CONTENT_LOADING', false)
     },
 	'isLoggedIn'(to, from){
