@@ -1,7 +1,11 @@
 <script>
 	import {mapGetters} from 'vuex'
+	import editor from 'vue2-medium-editor'
 	export default {
 		name: 'create-task-form',
+		components: {
+			'medium-editor': editor
+		},
 		created(){
 			this.taskStatuses = [
 				'NOT YET STARTED',
@@ -23,8 +27,8 @@
 		data(){
 			return {
 				newTask: {
-					title: null,
-					description: null,
+					title: 'New Task',
+					description: 'Ullamco proident aliqua sunt eiusmod tempor. Nostrud aliqua eu consequat eu ex quis laboris laboris non nisi ullamco. Adipisicing nisi anim cillum dolor sunt minim sint. Magna aute aliqua laboris voluptate non ad commodo. Consequat reprehenderit ea consequat consectetur duis consequat velit consectetur quis cupidatat.',
 					status: null
 				},
 				taskFormModal: false,
@@ -43,6 +47,9 @@
 			},
 			createTask(){
 				this.$store.commit('PAGE_LOADING', true)
+			},
+			applyTextEditTo(e, target){
+				console.log(e, target)
 			}
 		},
 		computed: mapGetters({
@@ -58,33 +65,24 @@
 
 <template>
 	<Modal
-        title="Create New Task"
         v-model="taskFormModal"
-        :mask-closable="false"
         :closable="false"
         @on-cancel="close"
         @on-ok="createTask"
-        width="80%">
+		class-name="tracker-modal">
+		<div slot="header">
+			<medium-editor :text="newTask.title" custom-tag="h2" @edit="applyTextEditTo($event, newTask.title)"></medium-editor>
+		</div>
         <div>
-        	<Form :model="newTask" label-position="left">
-        		<FormItem>
-        			<Tag closable color="blue">LawFormsUSA</Tag>
-        			<Button type="dashed" icon="ios-plus-outline" size="small">Add Project</Button>
-        		</FormItem>
-        		<FormItem>
-        			<Select v-model="newTask.status">
-    			        <Option v-for="(status, index) in taskStatuses" :value="status" :key="index">{{ status }}</Option>
-    			    </Select>
-        		</FormItem>
-    	        <FormItem>
-    	            <Input v-model="newTask.title" placeholder="Title"></Input>
-    	        </FormItem>
-    	        <FormItem>
-    	            <Input v-model="newTask.description" type="textarea" :rows="4" placeholder="Description"></Input>
-    	        </FormItem>
-    	    </Form>
-			<div slot="footer"></div>
+        	<medium-editor :text="newTask.description" custom-tag="p" @edit="applyTextEditTo($event, newTask.description)"></medium-editor>
         </div>
+		<div slot="footer">
+			<div class="comments">
+				<div class="comment">
+					
+				</div>
+			</div>
+		</div>
     </Modal>
 </template>
 
