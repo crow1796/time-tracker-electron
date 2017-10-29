@@ -83,7 +83,7 @@
 					            Add Member
 					        </a>
 					        <ul>
-					            <li v-for="member in members" class="member">
+					            <li v-for="(member, index) in members" class="member" :key="index">
 					            	<Avatar style="background-color: #87d068" icon="person" />
 				                	<span class="name">
 				                		{{ member.first_name + ' ' + member.last_name }}
