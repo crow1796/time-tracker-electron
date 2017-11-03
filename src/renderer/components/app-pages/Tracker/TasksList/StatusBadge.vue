@@ -45,6 +45,7 @@ export default {
 
 <style lang="scss" scoped>
     .tag{
+        margin-left: 5px;
         font-size: 0.9em;
         padding: 4px;
         color: white;

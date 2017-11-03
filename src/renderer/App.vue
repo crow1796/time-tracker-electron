@@ -108,7 +108,7 @@
 		                        </BreadcrumbItem>
 		                        <BreadcrumbItem v-if="selectedIteration && iterations[selectedIterationIndex]">
 	                        		<Poptip v-model="iterationSearchVisible" placement="bottom">
-	                        			{{ selectedIteration }}
+	                        			{{ iterations[selectedIterationIndex].name }}
                         		        <Icon type="arrow-down-b"></Icon>
                         		        <div slot="title">
                     		        		<Row>
@@ -126,8 +126,8 @@
 								        	        @on-select="selectIteration"
 								        	        placeholder="Search an Iteration"
 								        	        icon="arrow-down-b">
-								        	        <Option v-for="(iteration, index) in iterations" :value="iteration" :key="index">
-								        	            <span class="demo-auto-complete-title">{{ iteration }}</span>
+								        	        <Option v-for="(iteration, index) in iterations" :value="iteration.name" :key="iteration.id">
+								        	            <span class="demo-auto-complete-title">{{ iteration.name ? iteration.name : iteration.id }}</span>
 								        	        </Option>
 											</AutoComplete>
                         		        </div>
@@ -136,7 +136,7 @@
 		                    </Breadcrumb>
 		                </div>
 		                <div class="layout-content">
-							<Spin fix v-if="contentLoading"></Spin>
+							<Spin :fix="false" v-if="contentLoading" class="content-loading"></Spin>
 		                    <transition name="fade" mode="out-in">
 		                    	<router-view class="view" 
 		                    			keep-alive
@@ -207,10 +207,9 @@ methods: {
 		this.$store.commit('CONNECTIVITY', e)
 	},
     selectProject (project) {
-    	this.$store.commit('CONTENT_LOADING', true)
-		this.$store.dispatch('getIterationsFor', project)
+		this.$store.dispatch('getIterationsOf', project)
 				.then((response) => {
-					this.$router.replace(`/tracker/${this.selectedTeam}/${project}/${this.selectedIteration}`)
+					this.$router.replace(`/tracker/${this.selectedTeam}/${project}/${this.selectedIteration.id}`)
 				})
     },
     selectTeam (team) {
@@ -241,8 +240,9 @@ methods: {
 
     },
     selectIteration (iteration) {
+		iteration = _.find(this.iterations, {name: iteration})
 		this.iterationSearchVisible = false
-		this.$router.replace(`/tracker/${this.selectedTeam}/${this.selectedProject}/${iteration}`)
+		this.$router.replace(`/tracker/${this.selectedTeam}/${this.selectedProject}/${iteration.id}`)
     },
     searchTeam (query) {
 
@@ -254,30 +254,18 @@ methods: {
   watch: {
     '$route.params.team' (to, from) {
 		if (!to) return false
-		this.$store.commit('PAGE_LOADING', true)
-		this.$store.commit('SELECTED_TEAM', to)
-		this.$store.dispatch('getProjectsOfSelectedTeam', to)
-			.then((response) => {
-				this.$store.commit('PAGE_LOADING', false)
-			})
+		this.$store.dispatch('getProjectsOf', to)
     },
     '$route.params.project' (to, from) {
 		if (!to) return false
-		this.$store.commit('CONTENT_LOADING', true)
-		this.$store.commit('SELECTED_PROJECT', to)
-		this.$store.commit('CONTENT_LOADING', false)
+		this.$store.dispatch('getIterationsOf', to)
     },
     '$route.params.iteration' (to, from) {
 		if (!to) return false
-		this.$store.commit('CONTENT_LOADING', true)
-		this.$store.dispatch('changeIterationTo', to)
-		this.$store.commit('CONTENT_LOADING', false)
+		this.$store.dispatch('getTasksOf', {iteration: to})
     },
 	'isLoggedIn'(to, from){
 		this.$store.dispatch('initMenus')
-				.then((response) => {
-				this.iteration = _.head(this.iterations)
-			})
 	}
   }
 }

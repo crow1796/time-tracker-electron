@@ -48,14 +48,14 @@ export default {
 				        return true
 				    }
 				    this.$Message.destroy()
-  let errors = !_.isArray(response.data.error) ? response.data.error : ''
-  if (_.isArray(response.data.error)) _.map(response.data.error, (error) => errors += `<li>${error}</li>`)
-				    this.$Notice.error({
-      title: 'Login failed!',
-      desc: `<ul>${errors}</ul>`
-    })
+					let errors = !_.isArray(response.data.error) ? response.data.error : ''
+					if (_.isArray(response.data.error)) _.map(response.data.error, (error) => errors += `<li>${error}</li>`)
+					this.$Notice.error({
+						title: 'Login failed!',
+						desc: `<ul>${errors}</ul>`
+					})
 				    this.isLoading = false
-})
+				})
     }
   }
 }
@@ -82,7 +82,7 @@ export default {
 					            <Checkbox v-model="loginData.remember">Remember Me?</Checkbox>
 					        </FormItem>
 					        <FormItem>
-					            <Button v-if="!isLoading" type="primary" @click="loginUser" long login>Login</Button>
+					            <Button v-if="!isLoading" type="primary" @click="loginUser" long>Login</Button>
 					            <Spin size="large" fix v-if="isLoading"></Spin>
 					        </FormItem>
 					        <FormItem>

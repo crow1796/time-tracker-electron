@@ -1,37 +1,34 @@
 <script>
 import {mapGetters} from 'vuex'
 import _ from 'lodash'
+import ModalMixin from '@/components/mixins/ModalMixin.vue'
 export default {
     name: 'create-team-form',
+	mixins: [ModalMixin],
     data () {
         return {
             newTeam: {
                 name: null
-            },
-            teamFormModal: false
+            }
         }
     },
     methods: {
-        open () {
-          this.teamFormModal = true
-        },
-        close () {
-          this.newTeam = {
-            name: null
-          }
-          this.teamFormModal = false
+        closeModal() {
+            this.newTeam = {
+                name: null
+            }
         },
         createTeam () {
-            this.$store.commit('PAGE_LOADING', true)
+            this.$store.commit('CONTENT_LOADING', true)
             this.$store.dispatch('createTeam', this.newTeam)
-            .then((response) => {
-                    this.$store.dispatch('initMenus')
-                        .then((response) => {
-                            this.newTeam = {
-                                name: null
-                            }
-                        })
-                })
+                .then((response) => {
+                        this.$store.dispatch('initMenus')
+                            .then((response) => {
+                                this.newTeam = {
+                                    name: null
+                                }
+                            })
+                    })
         }
     },
     computed: mapGetters({
@@ -43,10 +40,10 @@ export default {
 <template>
 	<Modal
         title="Create New Project"
-        v-model="teamFormModal"
+        v-model="formModal"
         :mask-closable="false"
         :closable="false"
-        @on-cancel="close"
+        @on-cancel="closeModal"
         @on-ok="createTeam">
         <div>
         	<Form :model="newTeam" label-position="left" :label-width="100">
@@ -57,9 +54,3 @@ export default {
         </div>
     </Modal>
 </template>
-
-<style lang="scss" scoped>
-	.ivu-form-item{
-		margin-bottom: 0;
-	}
-</style>

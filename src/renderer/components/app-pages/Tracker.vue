@@ -3,13 +3,15 @@ import TasksList from './Tracker/TasksList.vue'
 import {mapGetters} from 'vuex'
 import _ from 'lodash'
 import CreateProjectForm from './Tracker/CreateProjectForm.vue'
-import CreateTaskForm from './Tracker/CreateTaskForm.vue'
+import CreateIterationForm from './Tracker/CreateIterationForm.vue'
+import TaskForm from './Tracker/TaskForm.vue'
 
 export default {
     components: {
         TasksList,
         CreateProjectForm,
-        CreateTaskForm
+        CreateIterationForm,
+        TaskForm
     },
     data () {
         return {
@@ -26,9 +28,20 @@ export default {
         selectedProjectIndex: 'getSelectedProjectIndex'
     }),
     methods: {
-        createIteration(){
-            this.$store.dispatch('createIterationForSelectedProject')
-        }
+		createNewTask(){
+			this.$store.dispatch('createNewTask')
+				.then((response) => {
+					if(response.data.task){
+						this.$store.dispatch('refreshTasksList')
+							.then((res) => {
+								this.$refs.taskForm.open(response.data.task)
+							})
+					}
+				})
+		},
+		editTask(task){
+			this.$refs.taskForm.open(task)
+		}
     }
 }
 </script>
@@ -38,18 +51,10 @@ export default {
 		<div class="tasks">
 		    <div class="tracker-filter-fields _no-padding" v-if="projects.length && selectedProject">
     		    <div class="text-left">
-                    <Button type="warning" icon="ios-plus-outline" @click="$refs.createTaskForm.open()">New Task</Button> 
-                    <Poptip
-                        confirm
-                        title="Continue creating new Sprint/Iteration?"
-                        @on-ok="createIteration"
-                        ok-text="Yes"
-                        cancel-text="No"
-                        placement="right-start">
-                        <Button type="default" icon="ios-plus-outline">New Sprint/Iteration</Button>
-                    </Poptip>
+                    <Button type="warning" icon="ios-plus-outline" @click="createNewTask">New Task</Button>
+					<Button type="default" icon="ios-plus-outline" @click="$refs.createIterationForm.open()">New Sprint/Iteration</Button>
                 </div>
-		    	<tasks-list></tasks-list>
+		    	<tasks-list ref="tasksList" @selected="editTask"></tasks-list>
 		    	<div class="task-view-toggle">
 		    		<Tooltip content="Board View" placement="left">
 	    				<div class="toggle">
@@ -57,12 +62,13 @@ export default {
 	    				</div>
 		            </Tooltip>
 		    	</div>
+				<create-iteration-form ref="createIterationForm"></create-iteration-form>
 		    </div>
 
 		    <div v-if="!projects.length && !selectedProject">
             	<h1 class="text-center">You don't have any projects yet.</h1>
 		    </div>
-            <create-task-form ref="createTaskForm"></create-task-form>
+            <task-form ref="taskForm"></task-form>
 		</div>
 	</div>
 </template>

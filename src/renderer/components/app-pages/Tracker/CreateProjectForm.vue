@@ -1,57 +1,40 @@
 <script>
 import {mapGetters} from 'vuex'
+import ModalMixin from '@/components/mixins/ModalMixin.vue'
 export default {
-  name: 'create-project-form',
-  data () {
-    return {
-      newProject: {
-        title: null
-      },
-      projectFormModal: false
-    }
-  },
-  methods: {
-    open () {
-      this.projectFormModal = true
-    },
-    close () {
-      this.newProject = {
-        title: null
-      }
-      this.projectFormModal = false
-    },
-    createProject () {
-      this.$store.commit('PAGE_LOADING', true)
-      this.$store.dispatch('createProject', this.newProject)
-                .then((response) => {
-                  if (response.data.status) {
-                    this.$store.dispatch('getProjectsOfSelectedTeam')
-                                .then((res) => {
-                                  this.$router.replace(`/tracker/${response.data.project.team_id}/${response.data.project.id}`)
-                                  window.scrollTo(0, 0)
-                                  this.close()
-                                  this.newProject = {
-                                    title: null
-                                  }
-                                  this.$store.commit('PAGE_LOADING', false)
-                                })
-                  }
-                })
-    }
-  },
-  computed: mapGetters({
-    selectedTeam: 'getSelectedTeam'
-  })
+	name: 'create-project-form',
+	mixins: [ModalMixin],
+	data () {
+		return {
+			newProject: {
+				title: null
+			}
+		}
+	},
+	methods: {
+		closeModal(){
+			this.newProject = {
+				title: null
+			}
+		},
+		createProject () {
+			this.$store.commit('CONTENT_LOADING', true)
+			this.$store.dispatch('createProject', this.newProject)
+		}
+	},
+	computed: mapGetters({
+		selectedTeam: 'getSelectedTeam'
+	})
 }
 </script>
 
 <template>
 	<Modal
         title="Create New Project"
-        v-model="projectFormModal"
+        v-model="formModal"
         :mask-closable="false"
         :closable="false"
-        @on-cancel="close"
+        @on-cancel="closeModal"
         @on-ok="createProject">
         <div>
         	<Form :model="newProject" label-position="left" :label-width="100">
@@ -62,9 +45,3 @@ export default {
         </div>
     </Modal>
 </template>
-
-<style lang="scss" scoped>
-	.ivu-form-item{
-		margin-bottom: 0;
-	}
-</style>
