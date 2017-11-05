@@ -26,16 +26,16 @@
 		                <Menu :active-name="selectedProject" theme="dark" width="auto" @on-select="selectProject">
 		                    <div class="layout-logo-left"></div>
                              <MenuGroup title="Projects">
+								<div class="text-center project-menu-add">
+									<Button type="warning" size="large" long @click="$refs.createProjectForm.open()">
+										<Icon type="android-add"></Icon>
+										Create New Project
+									</Button>
+								</div>
                              	<MenuItem :key="project.id" :name="project.id" v-for="(project, index) in projects">
                              		<Icon type="document-text"></Icon>
                              		{{ project.title }}
                              	</MenuItem>
-                             	<div class="text-center project-menu-add">
-                             		<Button type="error" long @click="$refs.createProjectForm.open()">
-                             			<Icon type="android-add"></Icon>
-                             			Create Project
-                             		</Button>
-                             	</div>
                              </MenuGroup>
 		                </Menu>
 		            </Col>
@@ -116,7 +116,7 @@
                 		        		        	<i>Sprints/Iterations</i>
                 		        		    	</Col>
                 		        		        <Col span="12" class-name="new-iteration-btn text-right">
-	                		        		        <Button size="small" icon="gear-b"></Button>
+	                		        		        <Button size="small" icon="gear-b" @click.stop="$refs.iterationForm.open(iterations[selectedIterationIndex])"></Button>
                     		        		    </Col>
                 		        		    </Row>
                     		        	</div>
@@ -151,6 +151,7 @@
 		    </div>
 		    <create-project-form ref="createProjectForm"></create-project-form>
 		    <create-team-form ref="createTeamForm"></create-team-form>
+			<iteration-form ref="iterationForm"></iteration-form>
 		</div>
 	</div>
 </template>
@@ -160,114 +161,116 @@ import { mapGetters } from 'vuex'
 import _ from 'lodash'
 import CreateProjectForm from '@/components/app-pages/Tracker/CreateProjectForm.vue'
 import CreateTeamForm from '@/components/app-pages/Tracker/CreateTeamForm.vue'
+import IterationForm from '@/components/app-pages/Tracker/IterationForm.vue'
 import detectNetwork from 'v-offline'
 
 export default {
-  name: 'my-project',
-  components: {
-    CreateProjectForm,
-    CreateTeamForm,
-    detectNetwork
-  },
+	name: 'my-project',
+	components: {
+		CreateProjectForm,
+		CreateTeamForm,
+		detectNetwork,
+		IterationForm
+	},
 	created () {
 		if(!this.isLoggedIn){
 			this.$store.commit('PAGE_LOADING', false)
 			this.$store.commit('CONTENT_LOADING', false)
 		}
-  },
-  data () {
-    return {
-      spanLeft: 5,
-      spanRight: 19,
-      iteration: null,
-      teamSearchVisible: false,
-      iterationSearchVisible: false,
-      globalQuery: null
-    }
-  },
-  computed: mapGetters({
-    teams: 'getTeams',
-    projects: 'getProjects',
-    selectedTeam: 'getSelectedTeam',
-    selectedProject: 'getSelectedProject',
-    selectedIteration: 'getSelectedIteration',
-    selectedTeamIndex: 'getSelectedTeamIndex',
-    selectedProjectIndex: 'getSelectedProjectIndex',
-    selectedIterationIndex: 'getSelectedIterationIndex',
-    iterations: 'getIterations',
-    isLoggedIn: 'isLoggedIn',
-    pageLoading: 'getPageLoading',
-    contentLoading: 'getContentLoading',
-    connectivity: 'getConnectivity',
-    iconSize: (this.spanLeft === 5 ? 14 : 24),
-    user: 'getUser'
-  }),
-methods: {
-	connectionDetected (e) {
-		this.$store.commit('CONNECTIVITY', e)
 	},
-    selectProject (project) {
-		this.$store.dispatch('getIterationsOf', project)
-				.then((response) => {
-					this.$router.replace(`/tracker/${this.selectedTeam}/${project}/${this.selectedIteration.id}`)
-				})
-    },
-    selectTeam (team) {
-      team = _.find(this.teams, {name: team})
-      team = team.id
-      this.teamSearchVisible = false
-      this.$router.replace(`/tracker/${team}`)
-    },
-    headerMenuChanged (e) {
-      switch (e) {
-        case 'logout':
-          this.$store.dispatch('logoutUser')
-          break
-        case 'create_team':
-          break
-        case 'team_settings':
-          break
-        case 'account_settings':
-          break
-        case 'logout':
-          break
-        default:
-          this.selectTeam(e)
-          break
-      }
-    },
-    searchIteration (query) {
+	data () {
+		return {
+			spanLeft: 5,
+			spanRight: 19,
+			iteration: null,
+			teamSearchVisible: false,
+			iterationSearchVisible: false,
+			globalQuery: null
+		}
+	},
+	computed: mapGetters({
+		teams: 'getTeams',
+		projects: 'getProjects',
+		selectedTeam: 'getSelectedTeam',
+		selectedProject: 'getSelectedProject',
+		selectedIteration: 'getSelectedIteration',
+		selectedTeamIndex: 'getSelectedTeamIndex',
+		selectedProjectIndex: 'getSelectedProjectIndex',
+		selectedIterationIndex: 'getSelectedIterationIndex',
+		iterations: 'getIterations',
+		isLoggedIn: 'isLoggedIn',
+		pageLoading: 'getPageLoading',
+		contentLoading: 'getContentLoading',
+		connectivity: 'getConnectivity',
+		iconSize: (this.spanLeft === 5 ? 14 : 24),
+		user: 'getUser'
+	}),
+	methods: {
+		connectionDetected (e) {
+			this.$store.commit('CONNECTIVITY', e)
+		},
+		selectProject (project) {
+			this.$store.dispatch('getIterationsOf', project)
+					.then((response) => {
+						this.$router.replace(`/tracker/${this.selectedTeam}/${project}/${this.selectedIteration.id}`)
+					})
+		},
+		selectTeam (team) {
+			team = _.find(this.teams, {name: team})
+			team = team.id
+			this.teamSearchVisible = false
+			this.$router.replace(`/tracker/${team}`)
+		},
+		headerMenuChanged (e) {
+		switch (e) {
+			case 'logout':
+				this.$store.dispatch('logoutUser')
+				break
+			case 'create_team':
+				break
+			case 'team_settings':
+				break
+			case 'account_settings':
+				break
+			case 'logout':
+				break
+			default:
+				this.selectTeam(e)
+				break
+		}
+		},
+		searchIteration (query) {
 
-    },
-    selectIteration (iteration) {
-		iteration = _.find(this.iterations, {name: iteration})
-		this.iterationSearchVisible = false
-		this.$router.replace(`/tracker/${this.selectedTeam}/${this.selectedProject}/${iteration.id}`)
-    },
-    searchTeam (query) {
+		},
+		selectIteration (iteration) {
+			iteration = _.find(this.iterations, {name: iteration})
+			this.iterationSearchVisible = false
+			this.$router.replace(`/tracker/${this.selectedTeam}/${this.selectedProject}/${iteration.id}`)
+		},
+		searchTeam (query) {
+			this.$store.dispatch('queryTeam', query)
+		},
+		createIteration () {
 
-    },
-    createIteration () {
-
-    }
-  },
-  watch: {
-    '$route.params.team' (to, from) {
-		if (!to) return false
-		this.$store.dispatch('getProjectsOf', to)
-    },
-    '$route.params.project' (to, from) {
-		if (!to) return false
-		this.$store.dispatch('getIterationsOf', to)
-    },
-    '$route.params.iteration' (to, from) {
-		if (!to) return false
-		this.$store.dispatch('getTasksOf', {iteration: to})
-    },
-	'isLoggedIn'(to, from){
-		this.$store.dispatch('initMenus')
+		}
+	},
+	watch: {
+		'$route.params.team' (to, from) {
+			if (!to) return false
+			this.$store.dispatch('getProjectsOf', to)
+		},
+		'$route.params.project' (to, from) {
+			if (!to) return false
+			this.$store.dispatch('getIterationsOf', to)
+		},
+		'$route.params.iteration' (to, from) {
+			if (!to) return false
+			this.$store.dispatch('getTasksOf', {iteration: to})
+		},
+		'isLoggedIn'(to, from){
+			this.$store.dispatch('initMenus')
+		}
 	}
-  }
 }
 </script>
 

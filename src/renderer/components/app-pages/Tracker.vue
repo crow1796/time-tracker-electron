@@ -1,16 +1,16 @@
 <script>
-import TasksList from './Tracker/TasksList.vue'
+import TasksList from '@/components/app-pages/Tracker/TasksList.vue'
 import {mapGetters} from 'vuex'
 import _ from 'lodash'
-import CreateProjectForm from './Tracker/CreateProjectForm.vue'
-import CreateIterationForm from './Tracker/CreateIterationForm.vue'
-import TaskForm from './Tracker/TaskForm.vue'
+import CreateProjectForm from '@/components/app-pages/Tracker/CreateProjectForm.vue'
+import IterationForm from '@/components/app-pages/Tracker/IterationForm.vue'
+import TaskForm from '@/components/app-pages/Tracker/TaskForm.vue'
 
 export default {
     components: {
         TasksList,
         CreateProjectForm,
-        CreateIterationForm,
+        IterationForm,
         TaskForm
     },
     data () {
@@ -62,7 +62,7 @@ export default {
 	    				</div>
 		            </Tooltip>
 		    	</div>
-				<create-iteration-form ref="createIterationForm"></create-iteration-form>
+				<iteration-form ref="createIterationForm"></iteration-form>
 		    </div>
 
 		    <div v-if="!projects.length && !selectedProject">
