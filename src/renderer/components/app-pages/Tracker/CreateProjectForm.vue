@@ -20,6 +20,11 @@ export default {
 		createProject () {
 			this.$store.commit('CONTENT_LOADING', true)
 			this.$store.dispatch('createProject', this.newProject)
+				.then((response) => {
+					this.newProject = {
+						title: null
+					}
+				})
 		}
 	},
 	computed: mapGetters({

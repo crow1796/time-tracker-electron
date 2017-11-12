@@ -32,7 +32,10 @@
 										Create New Project
 									</Button>
 								</div>
-                             	<MenuItem :key="project.id" :name="project.id" v-for="(project, index) in projects">
+								<div class="text-center project-filter">
+									<Input v-model="projectFilter" size="large" placeholder="Search for a Project..." icon="ios-search"></Input>
+								</div>
+                             	<MenuItem :key="project.id" :name="project.id" v-for="(project, index) in filteredProjects">
                              		<Icon type="document-text"></Icon>
                              		{{ project.title }}
                              	</MenuItem>
@@ -136,7 +139,7 @@
 		                    </Breadcrumb>
 		                </div>
 		                <div class="layout-content">
-							<Spin :fix="false" v-if="contentLoading" class="content-loading"></Spin>
+							<Spin :fix="true" v-if="contentLoading" class="content-loading"></Spin>
 		                    <transition name="fade" mode="out-in">
 		                    	<router-view class="view" 
 		                    			keep-alive
@@ -185,35 +188,39 @@ export default {
 			iteration: null,
 			teamSearchVisible: false,
 			iterationSearchVisible: false,
-			globalQuery: null
+			globalQuery: null,
+			projectFilter: null
 		}
 	},
-	computed: mapGetters({
-		teams: 'getTeams',
-		projects: 'getProjects',
-		selectedTeam: 'getSelectedTeam',
-		selectedProject: 'getSelectedProject',
-		selectedIteration: 'getSelectedIteration',
-		selectedTeamIndex: 'getSelectedTeamIndex',
-		selectedProjectIndex: 'getSelectedProjectIndex',
-		selectedIterationIndex: 'getSelectedIterationIndex',
-		iterations: 'getIterations',
-		isLoggedIn: 'isLoggedIn',
-		pageLoading: 'getPageLoading',
-		contentLoading: 'getContentLoading',
-		connectivity: 'getConnectivity',
-		iconSize: (this.spanLeft === 5 ? 14 : 24),
-		user: 'getUser'
-	}),
+	computed: {
+		...mapGetters({
+			teams: 'getTeams',
+			projects: 'getProjects',
+			selectedTeam: 'getSelectedTeam',
+			selectedProject: 'getSelectedProject',
+			selectedIteration: 'getSelectedIteration',
+			selectedTeamIndex: 'getSelectedTeamIndex',
+			selectedProjectIndex: 'getSelectedProjectIndex',
+			selectedIterationIndex: 'getSelectedIterationIndex',
+			iterations: 'getIterations',
+			isLoggedIn: 'isLoggedIn',
+			pageLoading: 'getPageLoading',
+			contentLoading: 'getContentLoading',
+			connectivity: 'getConnectivity',
+			iconSize: (this.spanLeft === 5 ? 14 : 24),
+			user: 'getUser'
+		}),
+		filteredProjects(){
+			if(!this.projectFilter) return this.projects
+			return _.filter(this.projects, (project) => project.title.toLowerCase().indexOf(this.projectFilter.toLowerCase()) > -1)
+		}
+	},
 	methods: {
 		connectionDetected (e) {
 			this.$store.commit('CONNECTIVITY', e)
 		},
 		selectProject (project) {
-			this.$store.dispatch('getIterationsOf', project)
-					.then((response) => {
-						this.$router.replace(`/tracker/${this.selectedTeam}/${project}/${this.selectedIteration.id}`)
-					})
+			this.$router.replace(`/tracker/${this.selectedTeam}/${project}`)
 		},
 		selectTeam (team) {
 			team = _.find(this.teams, {name: team})
@@ -258,10 +265,26 @@ export default {
 		'$route.params.team' (to, from) {
 			if (!to) return false
 			this.$store.dispatch('getProjectsOf', to)
+				.then((response) => {
+					let projects = response.data.projects
+					this.$store.commit('INIT_PROJECTS', projects)
+					let oldSelectedProject = projects.length && localStorage.getItem('selectedProject') && _.find(projects, {id: parseInt(localStorage.getItem('selectedProject'))}) ? parseInt(localStorage.getItem('selectedProject')) : (_.head(projects) ? _.head(projects).id : null)
+					this.$store.commit('SELECTED_PROJECT', oldSelectedProject)
+					if(!oldSelectedProject) return response
+					this.$router.replace(`/tracker/${to}/${oldSelectedProject}`)
+				})
 		},
 		'$route.params.project' (to, from) {
 			if (!to) return false
 			this.$store.dispatch('getIterationsOf', to)
+				.then((response) => {
+					let iterations = response.data.iterations
+					this.$store.commit('INIT_ITERATIONS', iterations)
+					console.log(_.head(iterations))
+					let oldSelectedIteration = _.head(iterations).id
+					if(!oldSelectedIteration) return response
+					this.$router.replace(`/tracker/${this.selectedTeam}/${to}/${oldSelectedIteration}`)
+				})
 		},
 		'$route.params.iteration' (to, from) {
 			if (!to) return false

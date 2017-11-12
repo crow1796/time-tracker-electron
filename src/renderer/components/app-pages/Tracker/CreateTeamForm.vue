@@ -39,7 +39,7 @@ export default {
 
 <template>
 	<Modal
-        title="Create New Project"
+        title="Create New Team"
         v-model="formModal"
         :mask-closable="false"
         :closable="false"

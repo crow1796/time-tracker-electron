@@ -69,7 +69,7 @@ export default {
 		},
 		pageChanged(e){
 			this.$store.dispatch('getTasksOf', {
-				iteration: this.selectedIteration.id,
+				iteration: this.selectedIteration,
 				query: {
 					limit: 5,
 					page: e

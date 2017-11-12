@@ -78,23 +78,24 @@ export default {
                         this.formModal = true
                         return false
                     }
-                    console.log(this.newIteration.period[0])
                     this.$store.commit('UPDATE_ITERATION', {
                         iteration: response.data.iteration.id,
-                        newIteration: {
-                            name: response.data.iteration.name,
-                            period: [
-                                response.data.iteration.started_at,
-                                response.data.iteration.ended_at
-                            ]
-                        }
+                        newIteration: response.data.iteration
                     })
                     return response
                 })
         },
         submitForm(){
+            if(this.newIteration.period){
+                let startedAt = new Date(this.newIteration.period[0])
+                let endedAt = new Date(this.newIteration.period[1])
+                this.newIteration.period = [
+                    `${startedAt.getUTCFullYear()}-${startedAt.getMonth() + 1}-${startedAt.getDate()}`,
+                    `${endedAt.getUTCFullYear()}-${endedAt.getMonth() + 1}-${endedAt.getDate()}`
+                ]
+            }
             this.$Notice.close()
-            this.$Message.success('Logging in...')
+            this.$Message.success('Creating...')
             this.$store.commit('CONTENT_LOADING', true)
             if(!this.newIteration.id) return this.createIteration()
 

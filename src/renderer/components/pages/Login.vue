@@ -85,9 +85,15 @@ export default {
 					            <Button v-if="!isLoading" type="primary" @click="loginUser" long>Login</Button>
 					            <Spin size="large" fix v-if="isLoading"></Spin>
 					        </FormItem>
-					        <FormItem>
+					        <FormItem class="text-right">
 					        	<router-link to="/forgot-password">Forgot Password?</router-link> or 
 					        	<router-link to="/register">Create an account</router-link>
+					        </FormItem>
+							<FormItem class="_no-margin">
+					            <Button v-if="!isLoading" type="error" long>Connect with Google+</Button>
+					            <Spin size="large" fix v-if="isLoading"></Spin>
+								<Button v-if="!isLoading" type="primary" long>Connect with Facebook</Button>
+					            <Spin size="large" fix v-if="isLoading"></Spin>
 					        </FormItem>
 					    </Form>
 					</Card>
@@ -99,6 +105,6 @@ export default {
 
 <style lang="scss" scoped>
 	#login-form{
-		margin-top: 80px;
+		margin-top: 40px;
 	}
 </style>
