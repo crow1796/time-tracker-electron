@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, ipcMain } from 'electron'
 
 /**
  * Set `__static` path to static files in production
@@ -22,7 +22,8 @@ function createWindow () {
   mainWindow = new BrowserWindow({
     height: 563,
     useContentSize: true,
-    width: 1148
+    width: 1148,
+    frame: false
   })
 
   mainWindow.loadURL(winURL)
@@ -44,6 +45,15 @@ app.on('activate', () => {
   if (mainWindow === null) {
     createWindow()
   }
+})
+
+ipcMain.on('resize-window', (event, arg) => {
+  arg.resizable = arg.resizable != undefined ? arg.resizable : false
+  arg.fullscreenable = arg.fullscreenable != undefined ? arg.fullscreenable : false
+  mainWindow.setSize(arg.width, arg.height, true)
+  mainWindow.setResizable(arg.resizable)
+  mainWindow.setFullScreenable(arg.fullscreenable)
+  mainWindow.center()
 })
 
 /**

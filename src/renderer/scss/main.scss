@@ -1,6 +1,55 @@
 body {
 	font-family: 'Montserrat', 'Myriad Pro', sans-serif;
+	-webkit-app-region: drag;
+	-ms-overflow-style: scrollbar;
 }
+
+input,
+button,
+textarea,
+a,
+label,
+span,
+ul,
+li,
+.layout-content,
+.layout{
+	-webkit-app-region: no-drag;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6{
+	-webkit-user-select: none;
+}
+
+.layout{
+	border: 0 !important;
+	border-radius: 0 !important;
+}
+
+#top-nav{
+	color: white;
+	background-color: #464c5b;
+
+	& > .hamburger-menu{
+		padding: 5px;
+		font-size: 1.3em;
+		display: inline-block;
+		width: 33px;
+		text-align: center;
+		cursor: pointer;
+	}
+	
+	& > .logo{
+		padding: 5px 0;
+		font-size: 1.3em;
+	}
+}
+
 
 .text{
 	&-left{

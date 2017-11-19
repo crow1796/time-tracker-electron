@@ -19,6 +19,14 @@
 			</div>
 		</div>
 		<div id="logged-in" v-if="isLoggedIn">
+			<div id="top-nav">
+				<span class="hamburger-menu">
+					<Icon type="android-menu"></Icon>
+				</span>
+				<span class="logo">
+					TimeTracker
+				</span>
+			</div>
 			<Spin fix v-if="pageLoading"></Spin>
 			<div class="layout" :class="{'layout-hide-text': spanLeft < 5}">
 		        <Row type="flex">
@@ -166,6 +174,7 @@ import CreateProjectForm from '@/components/app-pages/Tracker/CreateProjectForm.
 import CreateTeamForm from '@/components/app-pages/Tracker/CreateTeamForm.vue'
 import IterationForm from '@/components/app-pages/Tracker/IterationForm.vue'
 import detectNetwork from 'v-offline'
+import {ipcRenderer} from 'electron'
 
 export default {
 	name: 'my-project',
@@ -291,6 +300,13 @@ export default {
 			this.$store.dispatch('getTasksOf', {iteration: to})
 		},
 		'isLoggedIn'(to, from){
+			if(to){
+				ipcRenderer.send('resize-window', {
+					width: 1248, 
+					height: 580,
+					resizable: false
+				})
+			}
 			this.$store.dispatch('initMenus')
 		}
 	}
