@@ -4,6 +4,9 @@
 		    <div slot="offline">You are offline.</div>
 		</detect-network>
 		<div id="not-logged-in" v-if="!isLoggedIn">
+			<button class="window-close-btn" @click="closeApp">
+				<Icon type="close"></Icon>
+			</button>
 			<div class="container">
 				<div class="columns">
 					<div class="column is-half is-offset-one-quarter">
@@ -175,6 +178,7 @@ import CreateTeamForm from '@/components/app-pages/Tracker/CreateTeamForm.vue'
 import IterationForm from '@/components/app-pages/Tracker/IterationForm.vue'
 import detectNetwork from 'v-offline'
 import {ipcRenderer} from 'electron'
+import {remote} from 'electron'
 
 export default {
 	name: 'my-project',
@@ -268,6 +272,11 @@ export default {
 		},
 		createIteration () {
 
+		},
+		closeApp(){
+			console.log(remote)
+			let currentWindow = remote.getCurrentWindow()
+			currentWindow.close()
 		}
 	},
 	watch: {
@@ -376,5 +385,20 @@ export default {
 
 	.global-search .ivu-input-wrapper{
 		line-height: initial;
+	}
+
+	.window-close-btn{
+		position: absolute;
+		right: 0;
+		top: 0;
+		font-size: 1.2em;
+		width: 30px;
+		height: 30px;
+		text-align: center;
+		vertical-align: middle;
+		line-height: 30px;
+		cursor: pointer;
+		background-color: transparent;
+		border: 0;
 	}
 </style>
