@@ -8,7 +8,7 @@ import {mapGetters} from 'vuex'
 export default {
 	name: 'tasks-list',
 	components: {
-	StatusBadge
+		StatusBadge
 	},
 	data () {
 		return {

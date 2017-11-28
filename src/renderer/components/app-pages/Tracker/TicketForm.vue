@@ -1,38 +1,42 @@
 <script>
+	import { VueEditor } from 'vue2-editor'
 	export default {
-	  name: 'ticket-form',
-	  data () {
-	    return {
-	      ticket: {
-	        title: null,
-	        description: '',
-	        branch_name: null,
-	        project_id: 5468,
-	        asana_link: '',
-	        git_branch_link: '',
-	        estimate: 0
-	      },
-	      projectName: null,
-	      filteredProjectArray: [],
-	      selectedProject: null,
-	      iterationName: null,
-	      filteredIterationArray: [],
-	      selectedIteration: null
-	    }
-  },
-	  methods: {
-	    selectProject (option) {
-	      this.selectedProject = option
-	    },
-	    selectIteration (option) {
-	      this.selectedIteration = option
-	    }
-	  },
-	  watch: {
-	    'ticket.title' (to, from) {
-	      this.ticket.branch_name = '{Ticket #}_' + (to.trim().toLowerCase()).replace(/\W/g, '_')
-	    }
-	  }
+		name: 'ticket-form',
+		components: {
+			VueEditor
+		},
+		data () {
+			return {
+			ticket: {
+				title: null,
+				description: '',
+				branch_name: null,
+				project_id: 5468,
+				asana_link: '',
+				git_branch_link: '',
+				estimate: 0
+			},
+			projectName: null,
+			filteredProjectArray: [],
+			selectedProject: null,
+			iterationName: null,
+			filteredIterationArray: [],
+			selectedIteration: null
+			}
+		},
+		methods: {
+			selectProject (option) {
+				this.selectedProject = option
+			},
+			selectIteration (option) {
+				this.selectedIteration = option
+			}
+		},
+		watch: {
+			'ticket.title' (to, from) {
+				this.ticket.branch_name = '{Ticket #}_' + (to.trim().toLowerCase()).replace(/\W/g, '_')
+			}
+		}
 	}
 </script>
 
@@ -44,7 +48,7 @@
 			    <b-input placeholder="Enter Ticket Title" v-model="ticket.title"></b-input>
 			</b-field>
 			<b-field label="Description:">
-			    <b-input placeholder="Enter Iteration Description" type="textarea" v-model="ticket.description"></b-input>
+				<vue-editor v-model="ticket.description"></vue-editor>
 			</b-field>
 			<b-field label="Project:">
 				<b-autocomplete

@@ -1,8 +1,13 @@
 <script>
 	import {mapGetters} from 'vuex'
 	import _ from 'lodash'
+	import { VueEditor } from 'vue2-editor'
+
 	export default {
 		name: 'task-form',
+		components: {
+			VueEditor
+		},
 		created(){
 			this.taskStatuses = [
 				'NOT YET STARTED',
@@ -111,7 +116,8 @@
 				</div>
 		</div>
         <div class="task-description" v-if="newTask">
-			<Input placeholder="Description" type="textarea" v-model="newTask.description" @on-blur="updateTask"></Input>
+			<!-- <Input placeholder="Description" type="textarea" v-model="newTask.description" @on-blur="updateTask"></Input> -->
+			<vue-editor v-model="newTask.description"></vue-editor>
         </div>
 		<div slot="footer" class="text-left">
 			<h3>Comments</h3>
@@ -191,5 +197,11 @@
 			transition: all .3s ease;
 		}
 		
+	}
+
+
+
+	.quillWrapper .ql-snow.ql-toolbar{
+		display: block;
 	}
 </style>

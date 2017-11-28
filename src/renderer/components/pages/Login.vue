@@ -66,6 +66,11 @@ export default {
 						})
 						this.isLoading = false
 					})
+					.catch((err) => {
+						this.$Message.error(err.message)
+						this.$store.commit('PAGE_LOADING', false)
+						this.$store.commit('CONTENT_LOADING', false)
+					})
 		}
 	}
 }
