@@ -1,7 +1,11 @@
+@import 'variables';
+
 body {
-	font-family: 'Montserrat', 'Myriad Pro', sans-serif;
+	font-family: 'Raleway', sans-serif;
 	-webkit-app-region: drag;
 	-ms-overflow-style: scrollbar;
+    background-color: $main-bg;
+	color: $main-text-color;
 }
 
 input,
@@ -209,4 +213,219 @@ h6{
 
 ._no-margin{
 	margin: 0 !important;
+}
+
+.task-description {
+	.ql-editor,
+	.ql-code{
+		height: 200px;
+	}
+}
+
+// TQ Styles
+.tq{
+	&-content {
+		padding: 15px;
+	}
+
+	&-form-item{
+		padding: 5px;
+		margin-bottom: 10px;
+	}
+
+	&-form-item .tq-label{
+		display: block;
+		padding-bottom: 5px;
+	}
+
+	&-form-item .tq-input{
+		width: 100%;
+		display: block;
+		border-radius: $main-border-radius;
+		background-color: $light-bg;
+		border: 0;
+		color: $main-text-color;
+		outline: 0 !important;
+		font-weight: normal;
+		font-size: 1.1em;
+		padding: 7px;
+	}
+
+	&-form-item .tq-input.-lg{
+		
+	}
+
+	&-form-item .tq-input.-sm{
+		
+	}
+
+	&-form-item .tq-input.-xs{
+		
+	}
+
+	&-btn{
+		padding: 5px;
+		border-radius: $main-border-radius;
+		border: 0;
+		min-width: 100px;
+		text-align: center;
+		margin-top: 5px;
+		cursor: pointer;
+		outline: 0 !important;
+	}
+	
+	&-btn.-default{
+		background-color: $default;
+		color: $main-text-color;
+	}
+
+	&-btn.-default:hover,
+	&-btn.-default:active{
+		background-color: darken($default, 5%);
+	}
+
+	&-btn.-primary{
+		background-color: $primary;
+		color: $main-text-color;
+	}
+
+	&-btn.-primary:hover,
+	&-btn.-primary:active{
+		background-color: darken($primary, 5%);
+	}
+
+	&-btn.-warning{
+		background-color: $warning;
+		color: $main-text-color;
+	}
+
+	&-btn.-warning:hover,
+	&-btn.-warning:active{
+		background-color: darken($warning, 5%);
+	}
+
+	&-btn.-success{
+		background-color: $success;
+		color: $main-text-color;
+	}
+
+	&-btn.-success:hover,
+	&-btn.-success:active{
+		background-color: darken($success, 5%);
+	}
+
+	&-btn.-danger{
+		background-color: $danger;
+		color: $main-text-color;
+	}
+
+	&-btn.-danger:hover,
+	&-btn.-danger:active{
+		background-color: darken($danger, 5%);
+	}
+
+	&-btn.-sm{
+		font-size: 1em;
+	}
+
+	&-btn.-md{
+		font-size: 1.2em;
+	}
+
+	&-btn.-lg{
+		font-size: 1.5em;
+	}
+
+	&-btn.-block{
+		display: block;
+		width: 100%;
+	}
+
+	&-layout {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+	}
+}
+
+.teams-section{
+	width: 60px;
+	display: block;
+	background-color: $main-bg;
+
+	.teams-list{
+		width: 50px;
+		margin: 0 auto;
+	}
+
+	.teams-list > .team{
+		display: block;
+		border: 1px solid $main-text-color;
+		border-radius: 50%;
+		text-align: center;
+		width: 50px;
+		height: 50px;
+		line-height: 50px;
+		margin: 5px 0;
+		cursor: pointer;
+		overflow: hidden;
+	}
+
+	.teams-list > .team:hover{
+		border-color: $primary;
+		color: $primary;
+	}
+
+	.teams-list > .team.-add{
+		border-style: dashed;
+	}
+}
+
+.projects-section{
+	background-color: $secondary-bg;
+	width: 21%;
+
+	.heading{
+		padding: 5px;
+		background-color: $tertiary-bg;
+	}
+
+	.projects-list{
+		padding: 5px;
+	}
+	
+	.projects-list > .project > a,
+	.projects-list > .project:focus > a{
+		display: block;
+		font-size: 1.2em;
+		padding: 5px 0;
+		color: $secondary-text-color;
+		cursor: pointer;
+	}
+
+	.projects-list > .project:hover > a,
+	.projects-list > .project:active > a{
+		color: $main-text-color;
+		text-decoration: underline;
+	}
+
+	#add-project-btn{
+		width: 18px;
+		height: 18px;
+		line-height: 18px;
+		padding: 0;
+		float: right;
+		min-width: 0;
+		margin-top: 0;
+	}
+
+	.project-filter > input{
+		width: 100%;
+		padding: 6px;
+		font-size: 1.2em;
+	}
+}
+
+.is-marginless{
+	margin: 0;
 }

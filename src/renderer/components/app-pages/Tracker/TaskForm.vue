@@ -1,12 +1,16 @@
 <script>
+	// import Quill from 'quill'
+	// import { someModule } from '../yourModulePath/someQuillModule.js'
+	// Quill.register('modules/someModule', someModule)
+
 	import {mapGetters} from 'vuex'
 	import _ from 'lodash'
-	import { VueEditor } from 'vue2-editor'
+	import VueQuillEditor from 'vue-quill-editor'
 
 	export default {
 		name: 'task-form',
 		components: {
-			VueEditor
+			'quill-editor': VueQuillEditor.quillEditor
 		},
 		created(){
 			this.taskStatuses = [
@@ -30,7 +34,11 @@
 				newTask: null,
 				taskFormModal: false,
 				taskStatuses: [],
-				originalTask: null
+				originalTask: null,
+				editorOption: {
+					theme: 'bubble',
+					placeholder: 'Insert description here...'
+				}
 			}
 		},
 		methods: {
@@ -116,8 +124,12 @@
 				</div>
 		</div>
         <div class="task-description" v-if="newTask">
-			<!-- <Input placeholder="Description" type="textarea" v-model="newTask.description" @on-blur="updateTask"></Input> -->
-			<vue-editor v-model="newTask.description"></vue-editor>
+			<quill-editor v-model="newTask.description"
+			                ref="taskDescriptionEditor"
+			                :options="editorOption"
+			                height="200px"
+			                @blur="updateTask">
+			  </quill-editor>
         </div>
 		<div slot="footer" class="text-left">
 			<h3>Comments</h3>

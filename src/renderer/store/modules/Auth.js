@@ -65,7 +65,7 @@ const actions = {
 		localStorage.clear()
 		context.commit('USER_AUTH_STATUS', false)
 		setTimeout(() => {
-			router.push('/login')
+			router.replace('/login')
 		}, 1500)
 	}
 }

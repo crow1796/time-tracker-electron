@@ -66,7 +66,13 @@ export default {
 		    </div>
 
 		    <div v-if="!projects.length && !selectedProject">
-            	<h1 class="text-center">You don't have any projects yet.</h1>
+            	<h1 class="text-center">You don't have any projects yet.
+                    <Button type="warning" size="large" @click="$refs.createProjectForm.open()">
+                        <Icon type="android-add"></Icon>
+                        Create New Project
+                    </Button>
+                </h1>
+                <create-project-form ref="createProjectForm"></create-project-form>
 		    </div>
             <task-form ref="taskForm"></task-form>
 		</div>

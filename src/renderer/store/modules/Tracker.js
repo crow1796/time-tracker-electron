@@ -132,7 +132,7 @@ const actions = {
 				})
 	},
 	getProjectsOf (context, params) {
-		context.commit('CONTENT_LOADING', true)
+		context.commit('PAGE_LOADING', true)
 		context.commit('SELECTED_TEAM', params)
 		context.commit('INIT_TASKS', [])
 		return Vue.http.get(`${API_URL}/api/v1/teams/${context.getters.getSelectedTeam}/projects`)
@@ -141,7 +141,7 @@ const actions = {
 						context.commit('PAGE_LOADING', false)
 						context.commit('CONTENT_LOADING', false)
 					}
-
+					context.commit('PAGE_LOADING', false)
 					return response
 				})
 	},

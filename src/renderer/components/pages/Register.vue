@@ -2,11 +2,16 @@
 	import _ from 'lodash'
 	import Vue from 'vue'
 	import { ipcRenderer } from 'electron'
+	import TQSpinner from '@/components/TQSpinner.vue'
+	
 	export default {
+		components: {
+			'tq-spinner': TQSpinner
+		},
 		created(){
 			ipcRenderer.send('resize-window', {
 			width: 370, 
-			height: 580,
+			height: 560,
 			resizable: false,
 			fullscreenable: false
 			})
@@ -89,39 +94,54 @@
 
 <template>
 	<div id="register">
-		<div id="registration-form">
-			<h1 class="title">
-				<Icon type="locked"></Icon>
-				Register
+		<tq-spinner :fix="true" v-if="isLoading"></tq-spinner>
+		<div id="registration-form" class="tq-content">
+			<h1 class="text-center">
+				Create an Account
 			</h1>
-			<Form ref="registrationForm" :model="registrationData" :rules="rules" label-position="top">
-				<FormItem label="Full Name" prop="name">
-					<Input type="text" v-model="registrationData.name" placeholder="Enter your Full Name"></Input>
-				</FormItem>
-				<FormItem label="Email" prop="email">
-					<Input type="text" v-model="registrationData.email" placeholder="Enter your E-mail Address"></Input>
-				</FormItem>
-				<FormItem label="Password" prop="password">
-					<Input type="password" v-model="registrationData.password" placeholder="Enter Password"></Input>
-				</FormItem>
-				<FormItem label="Password Confirmation" prop="password_confirmation">
-					<Input type="password" v-model="registrationData.password_confirmation" placeholder="Re-enter Password"></Input>
-				</FormItem>
-				<FormItem>
-					<Button v-if="!isLoading" type="primary" @click="registerUser" long>Register</Button>
-					<Spin size="large" fix v-if="isLoading"></Spin>
-				</FormItem>
-				<FormItem class="text-right">
+			<form class="tq-form">
+				<div class="tq-form-item">
+					<label for="fullname" class="tq-label">
+						Full Name
+					</label>
+					<input type="text" name="fullname" id="fullname" class="tq-input" placeholder="Enter your Full Name" v-model="registrationData.name">
+				</div>
+				<div class="tq-form-item">
+					<label for="email" class="tq-label">
+						E-mail Address
+					</label>
+					<input type="text" name="email" id="email" class="tq-input" placeholder="Enter your E-mail Address" v-model="registrationData.email">
+				</div>
+				<div class="tq-form-item">
+					<label for="password" class="tq-label">
+						Password
+					</label>
+					<input type="password" name="password" id="password" class="tq-input" placeholder="Enter your Password" v-model="registrationData.password">
+				</div>
+				<div class="tq-form-item">
+					<label for="password_confirmation" class="tq-label">
+						Confirm Password
+					</label>
+					<input type="password" name="password_confirmation" id="password_confirmation" class="tq-input" placeholder="Re-enter Password" v-model="registrationData.password_confirmation">
+				</div>
+				<div class="tq-form-item">
+					<button class="tq-btn -md -block -primary" type="submit" @click="registerUser">
+						<span v-if="!isLoading">Register</span>
+					</button>
+				</div>
+				<div class="tq-form-item text-right">
 					<router-link to="/forgot-password">Forgot Password?</router-link> or 
 					<router-link to="/login">Already have an account?</router-link>
-				</FormItem>
-				<FormItem class="_no-margin">
-					<Button v-if="!isLoading" type="error" long>Connect with Google+</Button>
-					<Spin size="large" fix v-if="isLoading"></Spin>
-					<Button v-if="!isLoading" type="primary" long>Connect with Facebook</Button>
-					<Spin size="large" fix v-if="isLoading"></Spin>
-				</FormItem>
-			</Form>
+				</div>
+				<div class="tq-form-item is-marginless">
+					<button class="tq-btn -md -block -danger" type="button">
+						<span v-if="!isLoading">Connect with Google+</span>
+					</button>
+					<button class="tq-btn -md -block -primary" type="button">
+						<span v-if="!isLoading">Connect with Facebook</span>
+					</button>
+				</div>
+			</form>
 		</div>
 	</div>
 </template>

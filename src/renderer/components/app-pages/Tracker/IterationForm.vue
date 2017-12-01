@@ -24,12 +24,14 @@ export default {
                         message: 'Period is required.'
                     }
                 ]
-            }
+            },
+            updating: false
 		}
 	},
 	methods: {
         open(iteration){
             if(iteration){
+                this.updating = true
                 this.newIteration = JSON.parse(JSON.stringify(iteration))
                 this.newIteration.period = [
                     iteration.started_at,
@@ -59,6 +61,7 @@ export default {
                         this.formModal = true
                         return false
                     }
+                    this.closeModal()
                     this.$router.replace(`/tracker/${this.selectedTeam}/${this.selectedProject}/${response.data.iteration.id}`)
                     return response
                 })
@@ -82,6 +85,7 @@ export default {
                         iteration: response.data.iteration.id,
                         newIteration: response.data.iteration
                     })
+                    this.closeModal()
                     return response
                 })
         },
@@ -95,7 +99,7 @@ export default {
                 ]
             }
             this.$Notice.close()
-            this.$Message.success('Creating...')
+            this.$Message.success(!this.updating ? 'Creating...' : 'Updating...')
             this.$store.commit('CONTENT_LOADING', true)
             if(!this.newIteration.id) return this.createIteration()
 

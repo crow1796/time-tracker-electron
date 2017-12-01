@@ -27,13 +27,49 @@
 					<Icon type="android-menu"></Icon>
 				</span>
 				<span class="logo">
-					TimeTracker
+					TicTrack
 				</span>
 			</div>
-			<Spin fix v-if="pageLoading"></Spin>
+			<tq-spinner :fix="true" v-if="pageLoading"></tq-spinner>
+			<div class="tq-layout">
+				<section class="teams-section">
+					<ul class="teams-list">
+						<router-link :to="`/tracker/${team.id}`" tag="li" class="team" v-for="team in teams" :key="team.id">
+							{{ team.name }}
+						</router-link>
+						<li class="team -add" @click="$refs.createTeamForm.open()">
+							Add
+						</li>
+					</ul>
+				</section>
+				<section class="projects-section">
+					<div class="heading">
+						Projects
+						<button type="button" class="tq-btn -xs -default" id="add-project-btn" @click="$refs.createProjectForm.open()">
+							<Icon type="ios-plus-outline"></Icon>
+						</button>
+					</div>
+					<div>
+					</div>
+					<div class="text-center project-filter">
+						<input type="text" v-model="projectFilter" placeholder="Search for a Project..." icon="ios-search"/>
+					</div>
+					<ul class="projects-list">
+						<li class="project" :key="project.id" :name="project.id" v-for="(project, index) in filteredProjects">
+							<router-link :to="`/tracker/${this.selectedTeam}/${project.id}`">
+								{{ project.title }}
+							</router-link>
+						</li>
+					</ul>
+				</section>
+				<section class="content-section">
+					
+				</section>
+			</div>
 			<div class="layout" :class="{'layout-hide-text': spanLeft < 5}">
 		        <Row type="flex">
-		            <Col :span="spanLeft" class="layout-menu-left" v-if="selectedTeam">
+		            <Col :span="spanLeft" class="layout-menu-left" v-if="selectedTeam && filteredProjects.length && selectedProject">
+		            	<create-project-form ref="createProjectForm"></create-project-form>
 		                <Menu :active-name="selectedProject" theme="dark" width="auto" @on-select="selectProject">
 		                    <div class="layout-logo-left"></div>
                              <MenuGroup title="Projects">
@@ -53,7 +89,7 @@
                              </MenuGroup>
 		                </Menu>
 		            </Col>
-		            <Col :span="selectedTeam ? spanRight : 24">
+		            <Col :span="selectedTeam && filteredProjects.length ? spanRight : 24">
 		                <div class="layout-header">
 		                    <Menu mode="horizontal" theme="light" :active-name="selectedTeam" @on-select="headerMenuChanged">
                     		    <Row>
@@ -150,7 +186,7 @@
 		                    </Breadcrumb>
 		                </div>
 		                <div class="layout-content">
-							<Spin :fix="true" v-if="contentLoading" class="content-loading"></Spin>
+							<tq-spinner v-if="contentLoading" class-list="content-loading"></tq-spinner>
 		                    <transition name="fade" mode="out-in">
 		                    	<router-view class="view" 
 		                    			keep-alive
@@ -163,7 +199,6 @@
 		            </Col>
 		        </Row>
 		    </div>
-		    <create-project-form ref="createProjectForm"></create-project-form>
 		    <create-team-form ref="createTeamForm"></create-team-form>
 			<iteration-form ref="iterationForm"></iteration-form>
 		</div>
@@ -179,6 +214,7 @@ import IterationForm from '@/components/app-pages/Tracker/IterationForm.vue'
 import detectNetwork from 'v-offline'
 import {ipcRenderer} from 'electron'
 import {remote} from 'electron'
+import TQSpinner from '@/components/TQSpinner.vue'
 
 export default {
 	name: 'my-project',
@@ -186,7 +222,8 @@ export default {
 		CreateProjectForm,
 		CreateTeamForm,
 		detectNetwork,
-		IterationForm
+		IterationForm,
+		'tq-spinner': TQSpinner
 	},
 	created () {
 		if(!this.isLoggedIn){
@@ -274,7 +311,6 @@ export default {
 
 		},
 		closeApp(){
-			console.log(remote)
 			let currentWindow = remote.getCurrentWindow()
 			currentWindow.close()
 		}
@@ -298,7 +334,6 @@ export default {
 				.then((response) => {
 					let iterations = response.data.iterations
 					this.$store.commit('INIT_ITERATIONS', iterations)
-					console.log(_.head(iterations))
 					let oldSelectedIteration = _.head(iterations).id
 					if(!oldSelectedIteration) return response
 					this.$router.replace(`/tracker/${this.selectedTeam}/${to}/${oldSelectedIteration}`)

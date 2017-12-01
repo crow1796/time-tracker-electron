@@ -2,12 +2,16 @@
 import _ from 'lodash'
 import Vue from 'vue'
 import { ipcRenderer } from 'electron'
+import TQSpinner from '@/components/TQSpinner.vue'
 
 export default {
+	components: {
+		'tq-spinner': TQSpinner
+	},
 	created(){
 		ipcRenderer.send('resize-window', {
 			width: 370, 
-			height: 470,
+			height: 430,
 			resizable: false,
 			fullscreenable: false
 			})
@@ -78,48 +82,42 @@ export default {
 
 <template>
 	<div id="login">
-		<div id="login-form">
-			<h1 class="title">
-				<Icon type="locked"></Icon>
-				Login
+		<tq-spinner :fix="true" v-if="isLoading"></tq-spinner>
+		<div id="login-form" class="tq-content">
+			<h1 class="text-center">
+				tictraQ
 			</h1>
-			<Form ref="loginForm" :model="loginData" :rules="rules" label-position="top">
-				<FormItem label="Email" prop="email">
-					<Input type="text" v-model="loginData.email" placeholder="Enter your E-mail Address"></Input>
-				</FormItem>
-				<FormItem label="Password" prop="password">
-					<Input type="password" v-model="loginData.password" placeholder="Enter Password"></Input>
-				</FormItem>
-				<FormItem>
-					<Checkbox v-model="loginData.remember">Remember Me?</Checkbox>
-				</FormItem>
-				<FormItem>
-					<Button v-if="!isLoading" type="primary" @click="loginUser" long>Login</Button>
-					<Spin size="large" fix v-if="isLoading"></Spin>
-				</FormItem>
-				<FormItem class="text-right">
+			<form class="tq-form">
+				<div class="tq-form-item">
+					<label for="email" class="tq-label">E-mail Address</label>
+					<input type="text" v-model="loginData.email" name="email" id="email" class="tq-input" placeholder="Enter you E-mail Address">
+				</div>
+				<div class="tq-form-item">
+					<label for="password" class="tq-label">Password</label>
+					<input type="password" v-model="loginData.password" name="password" id="password" class="tq-input" placeholder="Enter Password">
+				</div>
+				<label for="remember_me">
+					<input v-model="loginData.remember" type="checkbox" name="remember_me" id="remembere_me">
+					Remember Me?
+				</label>
+				<div class="tq-form-item text-center">
+					<button class="tq-btn -md -block -primary" type="submit" @click="loginUser">
+						<span v-if="!isLoading">Login</span>
+					</button>
+				</div>
+				<div class="tq-form-item text-right">
 					<router-link to="/forgot-password">Forgot Password?</router-link> or 
 					<router-link to="/register">Create an account</router-link>
-				</FormItem>
-				<FormItem class="_no-margin">
-					<Button v-if="!isLoading" type="error" long>Connect with Google+</Button>
-					<Spin size="large" fix v-if="isLoading"></Spin>
-					<Button v-if="!isLoading" type="primary" long>Connect with Facebook</Button>
-					<Spin size="large" fix v-if="isLoading"></Spin>
-				</FormItem>
-			</Form>
+				</div>
+				<div class="tq-form-item is-marginless">
+					<button class="tq-btn -md -block -danger" type="button">
+						<span v-if="!isLoading">Connect with Google+</span>
+					</button>
+					<button class="tq-btn -md -block -primary" type="button">
+						<span v-if="!isLoading">Connect with Facebook</span>
+					</button>
+				</div>
+			</form>
 		</div>
 	</div>
 </template>
-
-<style lang="scss">
-#login-form{
-	padding: 15px;
-
-	& > .title{
-		border-bottom: 1px solid rgba(0, 0, 0, .1);
-		margin-bottom: 10px;
-		text-align: center;
-	}
-}
-</style>
