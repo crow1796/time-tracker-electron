@@ -61,12 +61,12 @@ const actions = {
 		return Vue.http.post(`${API_URL}/api/v1/register`, params)
 	},
 	logoutUser (context, params) {
-		context.commit('PAGE_LOADING', true)
+		context.commit('INIT_PROJECTS', [])
+		context.commit('INIT_ITERATIONS', [])
+		context.commit('INIT_TASKS', [])
 		localStorage.clear()
 		context.commit('USER_AUTH_STATUS', false)
-		setTimeout(() => {
-			router.replace('/login')
-		}, 1500)
+		router.replace('/login')
 	}
 }
 

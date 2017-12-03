@@ -12,7 +12,6 @@ export default {
 	},
 	data () {
 		return {
-			showTaskDetails: false,
 			selectedTask: null,
 			checkedTasks: []
 		}
@@ -27,7 +26,6 @@ export default {
 	watch: {
 		'$route.params.task' (to, from) {
 			if (!to) return false
-			this.showTaskDetails = true
 			this.selectedTask = _.find(this.tasks, {id: parseInt(to)})
 		}
 	},
@@ -85,7 +83,7 @@ export default {
 	<div class="tasks">
 		<div v-for="(task, index) in tasks" :key="index" class="task">
 			<a href="#" class="more-info-btn" @click="selectTask(task)">
-				Show more <Icon type="arrow-down-b"></Icon>
+				<i class="pe-7s-more"></i>
 			</a>
 			<Row>
 				<Col span="20">
@@ -117,105 +115,5 @@ export default {
 			<Page ref="pagination" :total="tasksCount" :page-size="5" @on-change="pageChanged" show-total></Page>
 		</div>
 	</div>
-
-	<Modal
-		:title="`${selectedTask.id} - ${selectedTask.title}`"
-		v-model="showTaskDetails"
-		class-name="vertical-center-modal"
-		@on-cancel="hideTaskDetails"
-		ok-text="Go!"
-		v-if="selectedTask"
-		width="70%">
-		<p>
-			<Row>
-				<Col span="12">
-					<status-badge :status="selectedTask.status"></status-badge>
-				</Col>
-				<Col span="12">
-					<div class="text-right">
-						<i-switch v-model="selectedTask.selected" @on-change="taskTimerChanged(selectedTask)">
-							<Icon type="ios-stopwatch-outline" slot="open"></Icon>
-						</i-switch>
-						<span class="time">
-							{{ selectedTask.timerModel ? selectedTask.timerModel : '00:00:00' }}
-						</span>
-					</div>
-				</Col>
-			</Row>
-			<br>
-			<Row>
-				<Col span="24">
-					<div><strong>Description:</strong></div>
-					{{ selectedTask.description }}
-				</Col>
-			</Row>
-		</p>
-		<div slot="footer"></div>
-	</Modal>
 </div>
 </template>
-
-<style lang="scss" scoped>
-#tasks-list{
-	padding-top: 15px;
-}
-
-.tasks{
-	.task{
-		padding: 10px;
-		margin-bottom: 5px;
-		position: relative;
-	}
-
-	& > .pages{
-		text-align: right;
-		padding-top: 20px;
-	}
-
-	.task{
-		border-bottom: 1px solid rgba(0, 0, 0, .1);
-	}
-
-	.task .title > b{
-		vertical-align: middle;
-		color: #ed3f14;
-	}
-
-	.task .title > i{
-		font-size: 1.4em;
-		vertical-align: middle;
-	}
-
-	.task .description{
-		padding-left: 26px;
-	}
-
-	.task .timer .time{
-		display: block;
-		font-size: 1.5em;
-		font-style: italic;
-	}
-
-	.task .more-info-btn{
-		position: absolute;
-		width: 100%;
-		height: 30px;
-		background: linear-gradient(rgba(255, 255, 255, 0.8), #fff);
-		bottom: 0;
-		z-index: 1;
-		text-align: center;
-		line-height: 30px;
-		transition: line-height .3s ease;
-	}
-
-	.task .more-info-btn:hover{
-		line-height: 40px;
-	}
-}
-
-.tasks .task{
-	max-height: 100px;
-	min-height: 100px;
-	overflow: hidden;
-}
-</style>

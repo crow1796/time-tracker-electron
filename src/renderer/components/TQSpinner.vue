@@ -26,9 +26,12 @@
 
 <template>
 	<div class="tq-spinner" :class="classes">
-		<div class="clock">
-			<div class="pointers"></div>
+		<div class="spinner-component">
+			<i class="pe-7s-config pe-spin"></i>
 		</div>
+		<!-- <div class="clock">
+			<div class="pointers"></div>
+		</div> -->
 	</div>
 </template>
 
@@ -45,7 +48,7 @@
 	  display: flex;
 	  justify-content: center;
 	  align-items: center;
-	  background: #f9f9f9;
+	  background: rgba(#202225, .95);
 	  z-index: 999;
 	  width: 100%;
 	  top: 0;
@@ -57,8 +60,12 @@
 	  }
 
 	  &.-fixed{
-	  	position: absolute;
+	  	position: fixed;
 	  }
+	}
+
+	.spinner-component{
+		font-size: 6em;
 	}
 
 	.clock {

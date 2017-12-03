@@ -27,178 +27,161 @@
 					<Icon type="android-menu"></Icon>
 				</span>
 				<span class="logo">
-					TicTrack
+					<img src="static/images/logo.png" alt="Logo">
 				</span>
 			</div>
-			<tq-spinner :fix="true" v-if="pageLoading"></tq-spinner>
 			<div class="tq-layout">
 				<section class="teams-section">
 					<ul class="teams-list">
-						<router-link :to="`/tracker/${team.id}`" tag="li" class="team" v-for="team in teams" :key="team.id">
-							{{ team.name }}
-						</router-link>
+						<li @click="selectTeam(team.id)" class="team" v-for="(team, index) in teams" :key="team.id" :class="{ '-active': (selectedTeam == team.id) }" v-if="index < 5">
+							<Tooltip :content="team.name" placement="right">
+								<span class="name">
+									<i class="pe-7s-portfolio"></i>
+								</span>
+							</Tooltip>
+						</li>
+						<li class="team" @click="$refs.createTeamForm.open()" v-if="teams.length > 5">
+							<Tooltip :content="`Show ${teams.length - 5} More`" placement="right">
+								<span class="name">
+									<i class="pe-7s-more"></i>
+								</span>
+							</Tooltip>
+						</li>
 						<li class="team -add" @click="$refs.createTeamForm.open()">
-							Add
+							<Tooltip content="Create New Team" placement="right">
+								<span class="name">
+									<Icon type="plus"></Icon>
+								</span>
+							</Tooltip>
+						</li>
+					</ul>
+					<ul class="user-info teams-list" v-if="user">
+						<li class="team -add">
+							<Icon type="person"></Icon>
+							<ul class="options">
+								<li>
+									<a>
+										<i class="pe-7s-user pe-fw"></i>
+										{{ user.name }}
+									</a>
+								</li>
+								<li>
+									<router-link to="/">
+										<i class="pe-7s-bell pe-fw"></i>
+										Notifications
+									</router-link>
+								</li>
+								<li>
+									<router-link to="/">
+										<i class="pe-7s-tools pe-fw"></i>
+										Account Settings
+									</router-link>
+								</li>
+								<li>
+									<a @click.prevent="logout">
+										<i class="pe-7s-power pe-fw"></i>
+										Logout
+									</a>
+								</li>
+							</ul>
 						</li>
 					</ul>
 				</section>
-				<section class="projects-section">
-					<div class="heading">
-						Projects
-						<button type="button" class="tq-btn -xs -default" id="add-project-btn" @click="$refs.createProjectForm.open()">
-							<Icon type="ios-plus-outline"></Icon>
-						</button>
+				<section class="projects-section" v-show="showTeamProjects">
+					<div class="projects _relative">
+						<create-project-form ref="createProjectForm"></create-project-form>
+						<div class="heading">
+							<i class="pe-7s-refresh-2 pe-spin" v-if="projectsLoading"></i>
+							Projects 
+							<div class="controls">
+								<Tooltip content="Create New Project" placement="bottom">
+									<button type="button" class="tq-btn -xs -default" @click="$refs.createProjectForm.open()">
+										<Icon type="ios-plus-outline"></Icon>
+									</button>
+								</Tooltip>
+
+								<Tooltip content="Team Settings" placement="bottom">
+									<button type="button" class="tq-btn -xs -default">
+										<i class="pe-7s-config"></i>
+									</button>
+								</Tooltip>
+
+								<Tooltip content="Close" placement="bottom">
+									<button type="button" class="tq-btn -xs -default" @click="hideTeamProjects">
+										<Icon type="android-close"></Icon>
+									</button>
+								</Tooltip>
+							</div>
+						</div>
+						<div>
+						</div>
+						<div class="text-center project-filter">
+							<input type="text" v-model="projectFilter" placeholder="Search for a Project..." icon="ios-search"/>
+						</div>
+						<ul class="projects-list">
+							<li class="project" :key="project.id" :name="project.id" v-for="(project, index) in filteredProjects" :class="{ '-active': (project.id == selectedProject) }">
+								<a @click.prevent="selectProject(project.id)">
+									<i class="pe-7s-box1"></i>
+									{{ project.title }}
+								</a>
+								<div class="controls">
+									<tq-dropdown>
+										<ul class="tq-dropdown-menu">
+											<li @click="goToSettings">
+												<i class="pe-7s-config pe-fw"></i>
+												Settings
+											</li>
+										</ul>
+									</tq-dropdown>
+								</div>
+							</li>
+						</ul>
 					</div>
-					<div>
+					<div class="iterations _relative" v-if="selectedProject">
+						<div class="heading">
+							<i class="pe-7s-refresh-2 pe-spin" v-if="iterationsLoading"></i> 
+							Iterations
+						</div>
+						<div>
+						</div>
+						<div class="text-center project-filter">
+							<input type="text" v-model="iterationFilter" placeholder="Search for an Iteration..." icon="ios-search"/>
+						</div>
+						<ul class="iterations-list">
+							<li class="iteration" :key="iteration.id" :name="iteration.id" v-for="(iteration, index) in filteredIterations" :class="{ '-active': (iteration.id == selectedIteration) }">
+								<a @click.prevent="selectIteration(iteration.id)">
+									<i class="pe-7s-box1"></i>
+									{{ iteration.name }}
+								</a>
+								<div class="controls">
+									<tq-dropdown>
+										<ul class="tq-dropdown-menu">
+											<li @click="$refs.iterationForm.open(iteration)">
+												<i class="pe-7s-config pe-fw"></i>
+												Settings
+											</li>
+											<li @click="goToSettings">
+												<i class="pe-7s-trash pe-fw"></i>
+												Delete
+											</li>
+										</ul>
+									</tq-dropdown>
+								</div>
+							</li>
+						</ul>
 					</div>
-					<div class="text-center project-filter">
-						<input type="text" v-model="projectFilter" placeholder="Search for a Project..." icon="ios-search"/>
-					</div>
-					<ul class="projects-list">
-						<li class="project" :key="project.id" :name="project.id" v-for="(project, index) in filteredProjects">
-							<router-link :to="`/tracker/${this.selectedTeam}/${project.id}`">
-								{{ project.title }}
-							</router-link>
-						</li>
-					</ul>
 				</section>
-				<section class="content-section">
-					
+				<section class="content-section" :class="{ '-no-projects-section': !showTeamProjects }">
+					<tq-spinner v-if="contentLoading"></tq-spinner>
+					<transition name="fade" mode="out-in">
+						<router-view class="view" 
+								keep-alive
+								transition
+								transition-mode="in-out">
+						</router-view>
+					</transition>
 				</section>
 			</div>
-			<div class="layout" :class="{'layout-hide-text': spanLeft < 5}">
-		        <Row type="flex">
-		            <Col :span="spanLeft" class="layout-menu-left" v-if="selectedTeam && filteredProjects.length && selectedProject">
-		            	<create-project-form ref="createProjectForm"></create-project-form>
-		                <Menu :active-name="selectedProject" theme="dark" width="auto" @on-select="selectProject">
-		                    <div class="layout-logo-left"></div>
-                             <MenuGroup title="Projects">
-								<div class="text-center project-menu-add">
-									<Button type="warning" size="large" long @click="$refs.createProjectForm.open()">
-										<Icon type="android-add"></Icon>
-										Create New Project
-									</Button>
-								</div>
-								<div class="text-center project-filter">
-									<Input v-model="projectFilter" size="large" placeholder="Search for a Project..." icon="ios-search"></Input>
-								</div>
-                             	<MenuItem :key="project.id" :name="project.id" v-for="(project, index) in filteredProjects">
-                             		<Icon type="document-text"></Icon>
-                             		{{ project.title }}
-                             	</MenuItem>
-                             </MenuGroup>
-		                </Menu>
-		            </Col>
-		            <Col :span="selectedTeam && filteredProjects.length ? spanRight : 24">
-		                <div class="layout-header">
-		                    <Menu mode="horizontal" theme="light" :active-name="selectedTeam" @on-select="headerMenuChanged">
-                    		    <Row>
-	                    		    <Col span="5" class-name="text-center">
-	            		    		    <Button type="dashed" @click="$refs.createTeamForm.open()">Create Team</Button>
-	                    		    </Col>
-	                    		    <Col span="14">
-	                    		    	<div class="global-search">
-	                    		    		<AutoComplete
-                    		    		        v-model="globalQuery"
-                    		    		        icon="ios-search-strong"
-                    		    		        placeholder="Search anything...">
-                    		    		        <div class="searched-item">
-                    		    		            
-                    		    		        </div>
-                    		    		    </AutoComplete>
-	                    		    	</div>
-	                    		    </Col>
-		                            <Col span="5">
-    		                            <Submenu name="2" v-if="user">
-    		                                <template slot="title">
-    		                                    <Icon type="android-person"></Icon>
-    		                                    {{ user.name }}
-    		                                </template>
-    		                                <MenuItem name="account_settings">Settings</MenuItem>
-    	                                    <MenuItem name="logout">Logout</MenuItem>
-    		                            </Submenu>
-		                            </Col>
-                    		    </Row>
-	                        </Menu>
-		                </div>
-		                <div class="layout-breadcrumb">
-		                    <Breadcrumb>
-	                        	<BreadcrumbItem v-if="selectedTeam && teams[selectedTeamIndex]">
-	                        		<Poptip v-model="teamSearchVisible" placement="bottom">
-	                        			{{ teams[selectedTeamIndex] ? teams[selectedTeamIndex].name : '' }}
-                        		        <Icon type="arrow-down-b"></Icon>
-                        		        <div slot="title">
-                    		        		<Row>
-                		        		        <Col span="12">
-                		        		        	<i>Teams</i>
-                		        		    	</Col>
-                		        		        <Col span="12" class-name="text-right">
-                    		        		        <Button size="small" icon="gear-b"></Button>
-                    		        		    </Col>
-                		        		    </Row>
-                        		        </div>
-                        		        <div slot="content">
-                            				<AutoComplete
-            					        	        @on-search="searchTeam"
-            					        	        @on-select="selectTeam"
-            					        	        placeholder="Select a Team"
-            					        	        icon="arrow-down-b">
-					        	                    <Option v-for="team in teams" :value="team.name" :key="team.id">
-					        	                        <span class="demo-auto-complete-title">{{ team.name }}</span>
-					        	                    </Option>
-            								</AutoComplete>
-                        		        </div>
-                        		    </Poptip>
-	                        	</BreadcrumbItem>
-		                        <BreadcrumbItem v-if="selectedProject && projects[selectedProjectIndex]">
-		                        	{{ selectedProject ? projects[selectedProjectIndex].title : '' }}
-		                        	<router-link :to="`/tracker/${selectedTeam}/${selectedProject}/settings`">
-		                        		<Icon type="gear-b"></Icon>
-		                        	</router-link>
-		                        </BreadcrumbItem>
-		                        <BreadcrumbItem v-if="selectedIteration && iterations[selectedIterationIndex]">
-	                        		<Poptip v-model="iterationSearchVisible" placement="bottom">
-	                        			{{ iterations[selectedIterationIndex].name }}
-                        		        <Icon type="arrow-down-b"></Icon>
-                        		        <div slot="title">
-                    		        		<Row>
-                		        		        <Col span="12">
-                		        		        	<i>Sprints/Iterations</i>
-                		        		    	</Col>
-                		        		        <Col span="12" class-name="new-iteration-btn text-right">
-	                		        		        <Button size="small" icon="gear-b" @click.stop="$refs.iterationForm.open(iterations[selectedIterationIndex])"></Button>
-                    		        		    </Col>
-                		        		    </Row>
-                    		        	</div>
-                        		        <div slot="content">
-			                				<AutoComplete
-								        	        @on-search="searchIteration"
-								        	        @on-select="selectIteration"
-								        	        placeholder="Search an Iteration"
-								        	        icon="arrow-down-b">
-								        	        <Option v-for="(iteration, index) in iterations" :value="iteration.name" :key="iteration.id">
-								        	            <span class="demo-auto-complete-title">{{ iteration.name ? iteration.name : iteration.id }}</span>
-								        	        </Option>
-											</AutoComplete>
-                        		        </div>
-                        		    </Poptip>
-		                        </BreadcrumbItem>
-		                    </Breadcrumb>
-		                </div>
-		                <div class="layout-content">
-							<tq-spinner v-if="contentLoading" class-list="content-loading"></tq-spinner>
-		                    <transition name="fade" mode="out-in">
-		                    	<router-view class="view" 
-		                    			keep-alive
-		                    			transition
-		                    			transition-mode="in-out">
-		                    	</router-view>
-		                    	
-		                    </transition>
-		                </div>
-		            </Col>
-		        </Row>
-		    </div>
 		    <create-team-form ref="createTeamForm"></create-team-form>
 			<iteration-form ref="iterationForm"></iteration-form>
 		</div>
@@ -215,6 +198,8 @@ import detectNetwork from 'v-offline'
 import {ipcRenderer} from 'electron'
 import {remote} from 'electron'
 import TQSpinner from '@/components/TQSpinner.vue'
+import TQDropdown from '@/components/TQDropdown.vue'
+import VueAvatar from 'vue-avatar'
 
 export default {
 	name: 'my-project',
@@ -223,7 +208,9 @@ export default {
 		CreateTeamForm,
 		detectNetwork,
 		IterationForm,
-		'tq-spinner': TQSpinner
+		VueAvatar,
+		'tq-spinner': TQSpinner,
+		'tq-dropdown': TQDropdown
 	},
 	created () {
 		if(!this.isLoggedIn){
@@ -239,7 +226,8 @@ export default {
 			teamSearchVisible: false,
 			iterationSearchVisible: false,
 			globalQuery: null,
-			projectFilter: null
+			projectFilter: null,
+			iterationFilter: null
 		}
 	},
 	computed: {
@@ -256,13 +244,20 @@ export default {
 			isLoggedIn: 'isLoggedIn',
 			pageLoading: 'getPageLoading',
 			contentLoading: 'getContentLoading',
+			projectsLoading: 'getProjectsLoading',
+			iterationsLoading: 'getIterationsLoading',
 			connectivity: 'getConnectivity',
+			showTeamProjects: 'getShowTeamProjects',
 			iconSize: (this.spanLeft === 5 ? 14 : 24),
 			user: 'getUser'
 		}),
 		filteredProjects(){
 			if(!this.projectFilter) return this.projects
 			return _.filter(this.projects, (project) => project.title.toLowerCase().indexOf(this.projectFilter.toLowerCase()) > -1)
+		},
+		filteredIterations(){
+			if(!this.iterationFilter) return this.iterations
+			return _.filter(this.iterations, (iteration) => iteration.name.toLowerCase().indexOf(this.iterationFilter.toLowerCase()) > -1)
 		}
 	},
 	methods: {
@@ -270,49 +265,35 @@ export default {
 			this.$store.commit('CONNECTIVITY', e)
 		},
 		selectProject (project) {
-			this.$router.replace(`/tracker/${this.selectedTeam}/${project}`)
+			if(this.selectedProject == project) return false
+			this.$router.replace(`/tracker/${this.selectedTeam}/${project}/${this.selectedIteration ? this.selectedIteration : '' }`)
 		},
 		selectTeam (team) {
-			team = _.find(this.teams, {name: team})
-			team = team.id
-			this.teamSearchVisible = false
-			this.$router.replace(`/tracker/${team}`)
+			if(this.selectedTeam == team){
+				this.$store.dispatch('showTeamProjects')
+				return false
+			}
+			this.$router.replace(`/tracker/${team}/${this.selectedProject ? this.selectedProject : '' }/${this.selectedIteration ? this.selectedIteration : '' }`)
 		},
-		headerMenuChanged (e) {
-		switch (e) {
-			case 'logout':
-				this.$store.dispatch('logoutUser')
-				break
-			case 'create_team':
-				break
-			case 'team_settings':
-				break
-			case 'account_settings':
-				break
-			case 'logout':
-				break
-			default:
-				this.selectTeam(e)
-				break
-		}
-		},
-		searchIteration (query) {
-
+		logout(){
+			this.$store.dispatch('logoutUser')
 		},
 		selectIteration (iteration) {
-			iteration = _.find(this.iterations, {name: iteration})
-			this.iterationSearchVisible = false
+			if(this.selectedIteration == iteration) return false
 			this.$router.replace(`/tracker/${this.selectedTeam}/${this.selectedProject}/${iteration.id}`)
 		},
 		searchTeam (query) {
 			this.$store.dispatch('queryTeam', query)
 		},
-		createIteration () {
-
-		},
 		closeApp(){
 			let currentWindow = remote.getCurrentWindow()
 			currentWindow.close()
+		},
+		goToSettings(){
+			this.$router.replace(`/tracker/${this.selectedTeam}/${this.selectedProject}/settings`)
+		},
+		hideTeamProjects(){
+			this.$store.dispatch('hideTeamProjects')
 		}
 	},
 	watch: {
@@ -322,6 +303,7 @@ export default {
 				.then((response) => {
 					let projects = response.data.projects
 					this.$store.commit('INIT_PROJECTS', projects)
+					this.$store.dispatch('showTeamProjects')
 					let oldSelectedProject = projects.length && localStorage.getItem('selectedProject') && _.find(projects, {id: parseInt(localStorage.getItem('selectedProject'))}) ? parseInt(localStorage.getItem('selectedProject')) : (_.head(projects) ? _.head(projects).id : null)
 					this.$store.commit('SELECTED_PROJECT', oldSelectedProject)
 					if(!oldSelectedProject) return response
@@ -348,7 +330,7 @@ export default {
 				ipcRenderer.send('resize-window', {
 					width: 1248, 
 					height: 580,
-					resizable: false
+					resizable: true
 				})
 			}
 			this.$store.dispatch('initMenus')

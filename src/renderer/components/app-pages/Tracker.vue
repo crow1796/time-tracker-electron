@@ -12,7 +12,7 @@ export default {
         CreateProjectForm,
         IterationForm,
         TaskForm
-    },
+	},
     data () {
         return {
             createProjectModal: false
@@ -51,8 +51,8 @@ export default {
 		<div class="tasks">
 		    <div class="tracker-filter-fields _no-padding" v-if="projects.length && selectedProject">
     		    <div class="text-left">
-                    <Button type="warning" icon="ios-plus-outline" @click="createNewTask">New Task</Button>
-					<Button type="default" icon="ios-plus-outline" @click="$refs.createIterationForm.open()">New Sprint/Iteration</Button>
+                    <button class="tq-btn -md -warning" type="button" @click="createNewTask">New Task</button>
+					<button class="tq-btn -md -default" type="button" @click="$refs.createIterationForm.open()">New Sprint</button>
                 </div>
 		    	<tasks-list ref="tasksList" @selected="editTask"></tasks-list>
 		    	<div class="task-view-toggle">
@@ -67,10 +67,10 @@ export default {
 
 		    <div v-if="!projects.length && !selectedProject">
             	<h1 class="text-center">You don't have any projects yet.
-                    <Button type="warning" size="large" @click="$refs.createProjectForm.open()">
-                        <Icon type="android-add"></Icon>
-                        Create New Project
-                    </Button>
+					<button type="button" class="tq-btn -sm -warning" @click="$refs.createProjectForm.open()">
+						<Icon type="android-add"></Icon>
+						Create New Project
+					</button>
                 </h1>
                 <create-project-form ref="createProjectForm"></create-project-form>
 		    </div>

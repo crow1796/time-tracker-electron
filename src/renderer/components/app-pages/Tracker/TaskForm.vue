@@ -87,6 +87,7 @@
 
 <template>
 	<Modal
+		v-if="newTask"
         v-model="taskFormModal"
         :closable="false"
         @on-cancel="close"
@@ -119,7 +120,7 @@
 				</div>
 				<div class="content">
 					<div class="form-group task-title">
-						<Input placeholder="Title" v-if="newTask" type="text" v-model="newTask.title" @on-blur="updateTask"></Input>
+						<input type="text" name="title" id="title" class="tq-input -lg" @blur="updateTask" v-model="newTask.title" placeholder="Title">
 					</div>
 				</div>
 		</div>
@@ -132,8 +133,8 @@
 			  </quill-editor>
         </div>
 		<div slot="footer" class="text-left">
-			<h3>Comments</h3>
 			<div class="comments">
+				<h3>Comments</h3>
 				<div class="comment">
 					<div class="reviewer-info">
 						<a href="#">
@@ -172,48 +173,3 @@
 		</div>
     </Modal>
 </template>
-
-<style lang="scss" scoped>
-
-	.form-group{
-		margin-bottom: 10px;
-	}
-
-	.comments {
-		& > .comment{
-			padding: 8px 8px 15px 8px;
-			// border-bottom: 1px solid #afafaf;
-		}
-
-		& > .comment .reviewer-info .reviewer-thumbnail{
-			width: 30px;
-			height: 30px;
-			object-fit: cover;
-			border-radius: 50%;
-			vertical-align: middle;
-			margin-right: 5px;
-		}
-
-		& > .comment .reviewer-info .reviewer-name{
-			color: #222;
-			font-weight: bold;
-		}
-
-		& > .comment .reviewer-info .reviewed-at{
-			padding: 0 8px;
-		}
-
-		& > .comment .review-comment{
-			padding-left: 37px;
-			position: relative;
-			transition: all .3s ease;
-		}
-		
-	}
-
-
-
-	.quillWrapper .ql-snow.ql-toolbar{
-		display: block;
-	}
-</style>

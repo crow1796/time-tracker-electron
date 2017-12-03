@@ -84,10 +84,10 @@ export default {
 	<div id="login">
 		<tq-spinner :fix="true" v-if="isLoading"></tq-spinner>
 		<div id="login-form" class="tq-content">
-			<h1 class="text-center">
-				tictraQ
-			</h1>
-			<form class="tq-form">
+			<div class="text-center">
+				<img src="static/images/logo.png" alt="tictraQ" class="show-logo">
+			</div>
+			<form class="tq-form" @submit.prevent="loginUser">
 				<div class="tq-form-item">
 					<label for="email" class="tq-label">E-mail Address</label>
 					<input type="text" v-model="loginData.email" name="email" id="email" class="tq-input" placeholder="Enter you E-mail Address">
@@ -101,7 +101,7 @@ export default {
 					Remember Me?
 				</label>
 				<div class="tq-form-item text-center">
-					<button class="tq-btn -md -block -primary" type="submit" @click="loginUser">
+					<button class="tq-btn -md -block -warning" type="submit">
 						<span v-if="!isLoading">Login</span>
 					</button>
 				</div>

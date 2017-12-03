@@ -96,10 +96,10 @@
 	<div id="register">
 		<tq-spinner :fix="true" v-if="isLoading"></tq-spinner>
 		<div id="registration-form" class="tq-content">
-			<h1 class="text-center">
-				Create an Account
-			</h1>
-			<form class="tq-form">
+			<div class="text-center">
+				<img src="static/images/logo.png" alt="tictraQ" class="show-logo">
+			</div>
+			<form class="tq-form" @submit.prevent="registerUser">
 				<div class="tq-form-item">
 					<label for="fullname" class="tq-label">
 						Full Name
@@ -125,7 +125,7 @@
 					<input type="password" name="password_confirmation" id="password_confirmation" class="tq-input" placeholder="Re-enter Password" v-model="registrationData.password_confirmation">
 				</div>
 				<div class="tq-form-item">
-					<button class="tq-btn -md -block -primary" type="submit" @click="registerUser">
+					<button class="tq-btn -md -block -warning" type="submit">
 						<span v-if="!isLoading">Register</span>
 					</button>
 				</div>

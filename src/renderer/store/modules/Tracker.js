@@ -12,7 +12,10 @@ const state = {
 	tasks: [],
 	tasksCount: 0,
 	pageLoading: true,
-	contentLoading: true
+	contentLoading: true,
+	projectsLoading: true,
+	iterationsLoading: true,
+	showTeamProjects: true
 }
 
 const mutations = {
@@ -53,6 +56,15 @@ const mutations = {
 	},
 	CONTENT_LOADING (state, loading) {
 		state.contentLoading = loading
+	},
+	PROJECTS_LOADING (state, loading) {
+		state.projectsLoading = loading
+	},
+	ITERATIONS_LOADING (state, loading) {
+		state.iterationsLoading = loading
+	},
+	SHOW_TEAM_PROJECTS(state, show){
+		state.showTeamProjects = show
 	}
 }
 
@@ -95,6 +107,15 @@ const getters = {
 	},
 	getContentLoading (state) {
 		return state.contentLoading
+	},
+	getProjectsLoading (state) {
+		return state.projectsLoading
+	},
+	getIterationsLoading (state) {
+		return state.iterationsLoading
+	},
+	getShowTeamProjects(state){
+		return state.showTeamProjects
 	}
 }
 
@@ -104,8 +125,8 @@ const actions = {
 		return Vue.http.get(`${API_URL}/api/v1/teams/all`)
 				.then((response) => {
 					if(!response.data.teams.length) {
-						context.commit('PAGE_LOADING', false)
 						context.commit('CONTENT_LOADING', false)
+						context.commit('PROJECTS_LOADING', false)
 						return false
 					}
 					let teams = response.data.teams
@@ -132,16 +153,21 @@ const actions = {
 				})
 	},
 	getProjectsOf (context, params) {
-		context.commit('PAGE_LOADING', true)
+		context.commit('PROJECTS_LOADING', true)
+		context.commit('ITERATIONS_LOADING', true)
+		context.commit('CONTENT_LOADING', true)
 		context.commit('SELECTED_TEAM', params)
 		context.commit('INIT_TASKS', [])
 		return Vue.http.get(`${API_URL}/api/v1/teams/${context.getters.getSelectedTeam}/projects`)
 				.then((response) => {
 					if(!response.data.projects.length) {
-						context.commit('PAGE_LOADING', false)
+						context.commit('PROJECTS_LOADING', false)
+						context.commit('ITERATIONS_LOADING', false)
 						context.commit('CONTENT_LOADING', false)
 					}
-					context.commit('PAGE_LOADING', false)
+					context.commit('PROJECTS_LOADING', false)
+					context.commit('ITERATIONS_LOADING', false)
+					context.commit('CONTENT_LOADING', false)
 					return response
 				})
 	},
@@ -160,16 +186,17 @@ const actions = {
 					})
 	},
 	getIterationsOf(context, project){
+		context.commit('ITERATIONS_LOADING', true)
 		context.commit('CONTENT_LOADING', true)
 		context.commit('SELECTED_PROJECT', project)
 		context.commit('INIT_TASKS', [])
 		return Vue.http.get(`${API_URL}/api/v1/teams/${context.getters.getSelectedTeam}/projects/${project}/iterations/all`)
 								.then((response) => {
 									if(!response.data.iterations.length) {
-										context.commit('PAGE_LOADING', false)
+										context.commit('ITERATIONS_LOADING', false)
 										context.commit('CONTENT_LOADING', false)
 									}
-
+									context.commit('ITERATIONS_LOADING', false)
 									return response
 								})
 	},
@@ -232,6 +259,12 @@ const actions = {
 	},
 	queryTeam(context, query){
 		return Vue.http.get(`${API_URL}/api/v1/teams/all`, { params: query })
+	},
+	hideTeamProjects(context, query){
+		context.commit('SHOW_TEAM_PROJECTS', false)
+	},
+	showTeamProjects(context, query){
+		context.commit('SHOW_TEAM_PROJECTS', true)
 	}
 }
 

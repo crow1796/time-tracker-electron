@@ -1,11 +1,13 @@
 @import 'variables';
+@import 'mixins';
 
 body {
-	font-family: 'Raleway', sans-serif;
+	font-family: 'Open Sans', sans-serif;
 	-webkit-app-region: drag;
 	-ms-overflow-style: scrollbar;
-    background-color: $main-bg;
+    background-color: $tertiary-bg;
 	color: $main-text-color;
+	@include scrollBar(lighten($default, 5%));
 }
 
 input,
@@ -17,7 +19,8 @@ span,
 ul,
 li,
 .layout-content,
-.layout{
+.layout,
+.tq-layout{
 	-webkit-app-region: no-drag;
 }
 
@@ -36,8 +39,13 @@ h6{
 }
 
 #top-nav{
-	color: white;
-	background-color: #464c5b;
+	color: $main-text-color;
+	background-color: $tertiary-bg;
+	position: fixed;
+    top: 0;
+    width: 100%;
+    left: 0;
+    z-index: 999;
 
 	& > .hamburger-menu{
 		padding: 5px;
@@ -51,6 +59,11 @@ h6{
 	& > .logo{
 		padding: 5px 0;
 		font-size: 1.3em;
+	}
+
+	& > .logo > img{
+		width: 55px;
+		vertical-align: middle;
 	}
 }
 
@@ -120,7 +133,7 @@ h6{
 	padding: 0 30px;
 	margin-bottom: 10px;
 	padding-bottom: 10px;
-	border-bottom: 1px solid #e9eaec;
+	border-bottom: 1px solid $main-bg;
 }
 
 .tracker-modal{
@@ -179,24 +192,6 @@ h6{
 	border-color: rgba(0, 0, 0, 0.06);
 }
 
-.content-loading{
-	position: absolute;
-    width: 100%;
-    height: 100%;
-    left: 0;
-    top: 0;
-    background: white;
-    text-align: center;
-	z-index: 999;
-	
-	& > .ivu-spin-main{
-		position: absolute;
-		left: 50%;
-		top: 300px;
-		transform: translateX(-50%);
-	}
-}
-
 .ivu-modal-wrap{
 	z-index: 1060;
 }
@@ -206,13 +201,16 @@ h6{
 	outline: 0 !important;
 	border: 0 !important;
 	box-shadow: none !important;
-	background: #495060 !important;
-    color: white !important;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.12) !important;
+	background: $light-bg !important;
+    color: $main-text-color !important;
 }
 
 ._no-margin{
 	margin: 0 !important;
+}
+
+._relative{
+	position: relative !important;
 }
 
 .task-description {
@@ -224,6 +222,14 @@ h6{
 
 // TQ Styles
 .tq{
+
+	&-layout{
+		min-height: 100vh;
+		max-height: 100vh;
+		padding-top: 33px;
+		overflow: hidden;
+	}
+	
 	&-content {
 		padding: 15px;
 	}
@@ -233,12 +239,12 @@ h6{
 		margin-bottom: 10px;
 	}
 
-	&-form-item .tq-label{
+	&-label{
 		display: block;
 		padding-bottom: 5px;
 	}
 
-	&-form-item .tq-input{
+	&-input{
 		width: 100%;
 		display: block;
 		border-radius: $main-border-radius;
@@ -251,15 +257,15 @@ h6{
 		padding: 7px;
 	}
 
-	&-form-item .tq-input.-lg{
+	&-input.-lg{
+		font-size: 2em;
+	}
+
+	&-input.-sm{
 		
 	}
 
-	&-form-item .tq-input.-sm{
-		
-	}
-
-	&-form-item .tq-input.-xs{
+	&-input.-xs{
 		
 	}
 
@@ -272,6 +278,17 @@ h6{
 		margin-top: 5px;
 		cursor: pointer;
 		outline: 0 !important;
+	}
+	
+	&-btn.-transparent{
+		background-color: transparent;
+		color: $secondary-text-color;
+	}
+	
+	&-btn.-transparent:hover,
+	&-btn.-transparent:active{
+		background-color: darken($default, 5%);
+		color: $main-text-color;
 	}
 	
 	&-btn.-default{
@@ -324,6 +341,14 @@ h6{
 		background-color: darken($danger, 5%);
 	}
 
+	&-btn.-xs{
+		padding: 0px 7px;
+		min-width: 0;
+		margin-top: 0;
+		margin-left: 4px;
+		font-size: .9em;
+	}
+	
 	&-btn.-sm{
 		font-size: 1em;
 	}
@@ -341,6 +366,46 @@ h6{
 		width: 100%;
 	}
 
+	&-dropdown{
+		position: relative;
+	}
+
+	&-dropdown .tq-dropdown-content{
+		display: block;
+		position: absolute;
+		right: calc(100% + 5px);
+		transform: translateY(-50%);
+		background: $light-bg;
+		color: $main-text-color;
+		border-radius: 3px;
+		min-width: 150px;
+		z-index: 9;
+		box-shadow: 0px 3px 3px rgba($tertiary-bg, 0.15);
+		top: 50%;
+	}
+
+	&-dropdown > .tq-dropdown-content:before{
+		content: "";
+		display: block;
+		position: absolute;
+		right: -5px;
+		top: 50%;
+		border-top: 5px solid transparent;
+		border-left: 5px solid $light-bg;
+		border-bottom: 5px solid transparent;
+		transform: translateY(-50%);
+	}
+
+	&-dropdown > .tq-dropdown-content > .tq-dropdown-menu > li{
+		padding: 5px;
+		color: $secondary-text-color;
+		cursor: pointer;
+	}
+
+	&-dropdown > .tq-dropdown-content > .tq-dropdown-menu > li:hover{
+		color: $main-text-color;
+	}
+
 	&-layout {
 		display: flex;
 		flex-direction: row;
@@ -349,9 +414,11 @@ h6{
 }
 
 .teams-section{
+	position: relative;
 	width: 60px;
 	display: block;
-	background-color: $main-bg;
+	background-color: $tertiary-bg;
+	position: relative;
 
 	.teams-list{
 		width: 50px;
@@ -360,7 +427,7 @@ h6{
 
 	.teams-list > .team{
 		display: block;
-		border: 1px solid $main-text-color;
+		border: 1px solid transparent;
 		border-radius: 50%;
 		text-align: center;
 		width: 50px;
@@ -369,19 +436,95 @@ h6{
 		margin: 5px 0;
 		cursor: pointer;
 		overflow: hidden;
+		color: $secondary-text-color;
+	}
+
+	.teams-list > .team .name{
+		font-size: 2.5em;
+	}
+	
+	.teams-list > .team.-add{
+		border-style: dashed;
+		border-color: $main-text-color;
 	}
 
 	.teams-list > .team:hover{
-		border-color: $primary;
-		color: $primary;
+		border-color: $warning;
+		color: $warning;
 	}
 
-	.teams-list > .team.-add{
-		border-style: dashed;
+	.teams-list > .team:hover .vue-avatar--wrapper{
+		color: $warning !important;
+	}
+
+	.teams-list > .team.-active{
+		border-color: $warning;
+		color: $warning !important;
+	}
+	
+	.teams-list > .team.-active .vue-avatar--wrapper{
+		color: $warning !important;
+	}
+
+	.user-info{
+		padding: 5px;
+		position: absolute;
+		bottom: 0;
+		left: 0;
+	}
+
+	.user-info{
+		cursor: pointer;
+		font-size: 2em;
+	}
+	
+	.user-info > .vue-avatar--wrapper{
+		border: 1px solid transparent;
+	}
+
+	.user-info:hover > .vue-avatar--wrapper{
+		color: $warning !important;
+		border: 1px solid $warning;
+	}
+	
+	.user-info .options{
+		display: block;
+		position: absolute;
+		left: 50px;
+		z-index: 999;
+		background: #36393e;
+		border-radius: 5px;
+		font-size: initial;
+		line-height: normal;
+		width: 0;
+		height: 0;
+		bottom: 20px;
+		overflow: hidden;
+		transition: all .3s ease;
+	}
+
+	.user-info:hover .options{
+		bottom: 20px;
+		width: 200px;
+		height: 156px;
+	}
+	
+	.user-info .options > li > a,
+	.user-info .options > li > a:focus{
+		padding: 10px 15px;
+		display: block;
+		text-align: left;
+		color: $secondary-text-color;
+	}
+	
+	.user-info .options > li > a:hover,
+	.user-info .options > li > a:active{
+		color: $main-text-color;
 	}
 }
 
 .projects-section{
+	position: relative;
 	background-color: $secondary-bg;
 	width: 21%;
 
@@ -390,42 +533,251 @@ h6{
 		background-color: $tertiary-bg;
 	}
 
-	.projects-list{
+	.projects-list,
+	.iterations-list{
 		padding: 5px;
+		min-height: 200px;
+		max-height: 200px;
+		overflow-y: auto;
+		overflow-x: visible;
+		@include scrollBar(lighten($default, 5%));
+	}
+	
+	.projects-list > .project,
+	.iterations-list > .iteration{
+		position: relative;
+	}
+	
+	.projects-list > .project > .controls,
+	.iterations-list > .iteration > .controls{
+		display: none;
 	}
 	
 	.projects-list > .project > a,
-	.projects-list > .project:focus > a{
+	.iterations-list > .iteration > a,
+	.projects-list > .project:focus > a,
+	.iterations-list > .iteration:focus > a{
 		display: block;
 		font-size: 1.2em;
-		padding: 5px 0;
+		padding: 5px;
 		color: $secondary-text-color;
 		cursor: pointer;
 	}
 
+	.projects-list > .project.-active > a,
+	.iterations-list > .iteration.-active > a,
 	.projects-list > .project:hover > a,
-	.projects-list > .project:active > a{
+	.iterations-list > .iteration:hover > a,
+	.projects-list > .project:active > a,
+	.iterations-list > .iteration:active > a{
 		color: $main-text-color;
-		text-decoration: underline;
+		font-weight: bold;
+	}
+	
+	.projects-list > .project.-active > a + .controls,
+	.iterations-list > .iteration.-active > a + .controls,
+	.projects-list > .project:hover > a + .controls,
+	.iterations-list > .iteration:hover > a + .controls,
+	.projects-list > .project:active > a + .controls,
+	.iterations-list > .iteration:active > a + .controls{
+		display: block;
 	}
 
-	#add-project-btn{
-		width: 18px;
-		height: 18px;
-		line-height: 18px;
-		padding: 0;
+	.controls{
 		float: right;
-		min-width: 0;
-		margin-top: 0;
+	}
+	
+	.projects-list > .project > .controls,
+	.iterations-list > .iteration > .controls{
+		padding: 0 5px;
+		position: absolute;
+		right: 0;
+		top: 50%;
+		transform: translateY(-50%);
+		z-index: 9;
 	}
 
-	.project-filter > input{
+	.project-filter > input,
+	.iteration-filter > input{
 		width: 100%;
 		padding: 6px;
 		font-size: 1.2em;
 	}
 }
 
+.content-section{
+	position: relative;
+	padding: 20px;
+    width: calc(100% - 21% - 60px);
+	background: $main-bg;
+	max-height: 100%;
+	overflow: auto;
+	@include scrollBar(lighten($default, 5%));
+	
+	&.-no-projects-section{
+		width: calc(100% - 60px);
+	}
+
+	#tasks-list{
+		padding-top: 15px;
+	}
+	
+	#tasks-list .tasks .task{
+		padding: 10px;
+		margin-bottom: 5px;
+		position: relative;
+		color: $secondary-text-color;
+		border: 1px solid transparent;
+		border-radius: $main-border-radius;
+	}
+
+	#tasks-list .tasks .task:hover{
+		border-color: $light-bg;
+	}
+
+	#tasks-list .tasks > .pages{
+		text-align: right;
+		padding-top: 20px;
+	}
+
+	#tasks-list .tasks .task .title > b{
+		vertical-align: middle;
+		color: $warning;
+	}
+
+	#tasks-list .tasks .task .title > i{
+		font-size: 1.4em;
+		vertical-align: middle;
+	}
+
+	#tasks-list .tasks .task .description{
+		padding-left: 26px;
+	}
+
+	#tasks-list .tasks .task .timer .time{
+		display: block;
+		font-size: 1.5em;
+		font-style: italic;
+	}
+
+	#tasks-list .tasks .task .more-info-btn{
+		position: absolute;
+		width: 100%;
+		height: 30px;
+		background: linear-gradient(rgba($main-bg, .8), $main-bg);
+		bottom: 0;
+		z-index: 1;
+		text-align: center;
+		line-height: 30px;
+		transition: line-height .3s ease;
+		color: $main-text-color;
+	}
+
+	#tasks-list .tasks .task .more-info-btn:hover{
+		line-height: 40px;
+	}
+	
+	#tasks-list .tasks .task{
+		max-height: 100px;
+		min-height: 100px;
+		overflow: hidden;
+	}
+}
+
 .is-marginless{
 	margin: 0;
+}
+
+.tracker-modal{
+	.ivu-modal-content{
+		background: $light-bg;
+	}
+
+	.ivu-modal-footer{
+		border-top-color: $main-bg;
+	}
+	
+	.form-group{
+		margin-bottom: 10px;
+	}
+
+	.comments {
+		color: $secondary-text-color;
+
+		& > .comment{
+			padding: 8px 8px 15px 8px;
+		}
+
+		& > .comment .reviewer-info .reviewer-thumbnail{
+			width: 30px;
+			height: 30px;
+			object-fit: cover;
+			border-radius: 50%;
+			vertical-align: middle;
+			margin-right: 5px;
+		}
+
+		& > .comment .reviewer-info .reviewer-name{
+			color: $main-text-color;
+			font-weight: bold;
+		}
+
+		& > .comment .reviewer-info .reviewed-at{
+			padding: 0 8px;
+		}
+
+		& > .comment .review-comment{
+			padding-left: 37px;
+			position: relative;
+			transition: all .3s ease;
+		}
+		
+	}
+
+	.quillWrapper .ql-snow.ql-toolbar{
+		display: block;
+	}
+}
+
+.ivu-page-item-jump-next, .ivu-page-item-jump-prev, .ivu-page-next, .ivu-page-prev{
+	background-color: $tertiary-bg;
+	border-color: $secondary-bg;
+
+	&:hover{
+		border-color: $secondary-bg;
+		color: $main-text-color;
+	}
+}
+
+.ql-editor{
+	@include scrollBar(lighten($default, 5%));
+}
+
+.ivu-page-item:not(.ivu-page-item-active){
+	color: $secondary-text-color;
+	border-color: $secondary-bg;
+	color: $main-text-color;
+	background-color: $secondary-bg	
+}
+
+.ivu-page-item:not(.ivu-page-item-active):hover{
+	color: $main-text-color;
+	border-color: $secondary-bg;
+}
+
+.show-logo{
+	width: 50%;
+}
+
+.ivu-page-item-active{
+	background-color: $warning;
+	border-color: $warning;
+
+	&:hover{
+		border-color: $warning;
+	}
+}
+
+.ivu-date-picker .ivu-select-dropdown{
+	color: $tertiary-text-color;
 }
