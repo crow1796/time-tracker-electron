@@ -141,6 +141,13 @@
 						<div class="heading">
 							<i class="pe-7s-refresh-2 pe-spin" v-if="iterationsLoading"></i> 
 							Iterations
+							<div class="controls">
+								<Tooltip content="Create New Iteration" placement="bottom">
+									<button type="button" class="tq-btn -xs -default" @click="$refs.iterationForm.open()">
+										<Icon type="ios-plus-outline"></Icon>
+									</button>
+								</Tooltip>
+							</div>
 						</div>
 						<div>
 						</div>
@@ -273,14 +280,14 @@ export default {
 				this.$store.dispatch('showTeamProjects')
 				return false
 			}
-			this.$router.replace(`/tracker/${team}/${this.selectedProject ? this.selectedProject : '' }/${this.selectedIteration ? this.selectedIteration : '' }`)
+			this.$router.replace(`/tracker/${team}${this.selectedProject ? '/' + this.selectedProject : '' }${this.selectedIteration ? '/' + this.selectedIteration : '' }`)
 		},
 		logout(){
 			this.$store.dispatch('logoutUser')
 		},
 		selectIteration (iteration) {
 			if(this.selectedIteration == iteration) return false
-			this.$router.replace(`/tracker/${this.selectedTeam}/${this.selectedProject}/${iteration.id}`)
+			this.$router.replace(`/tracker/${this.selectedTeam}/${this.selectedProject}/${iteration}`)
 		},
 		searchTeam (query) {
 			this.$store.dispatch('queryTeam', query)

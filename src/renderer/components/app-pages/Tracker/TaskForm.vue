@@ -94,35 +94,21 @@
         @on-ok="createTask"
 		class-name="tracker-modal">
 		<div slot="header">
-				<div class="task-options">
-					<Row>
-						<Col span="12">
-							<ButtonGroup size="small">
-								<Button type="primary">
-									IN PROGRESS
-								</Button>
-								<Button type="ghost" icon="android-clipboard">
-									Copy Link
-								</Button>
-							</ButtonGroup>
-						</Col>
-						<Col span="12" class-name="text-right">
-							<span v-if="newTask">
-								<i-switch v-model="newTask.selected" @on-change="taskTimerChanged">
-									<Icon type="ios-stopwatch-outline" slot="open"></Icon>
-								</i-switch>
-								<span class="time">
-									{{ newTask.timerModel ? newTask.timerModel : '00:00:00' }}
-								</span>
-							</span>
-						</Col>
-					</Row>
+			<div class="task-options">
+				<span v-if="newTask">
+					<i-switch v-model="newTask.selected" @on-change="taskTimerChanged">
+						<Icon type="ios-stopwatch-outline" slot="open"></Icon>
+					</i-switch>
+					<span class="time">
+						{{ newTask.timerModel ? newTask.timerModel : '00:00:00' }}
+					</span>
+				</span>
+			</div>
+			<div class="content">
+				<div class="form-group task-title">
+					<input type="text" name="title" id="title" class="tq-input -lg" @blur="updateTask" v-model="newTask.title" placeholder="Title">
 				</div>
-				<div class="content">
-					<div class="form-group task-title">
-						<input type="text" name="title" id="title" class="tq-input -lg" @blur="updateTask" v-model="newTask.title" placeholder="Title">
-					</div>
-				</div>
+			</div>
 		</div>
         <div class="task-description" v-if="newTask">
 			<quill-editor v-model="newTask.description"

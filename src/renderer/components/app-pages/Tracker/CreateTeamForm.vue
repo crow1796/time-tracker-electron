@@ -20,6 +20,8 @@ export default {
         },
         createTeam () {
             this.$store.commit('CONTENT_LOADING', true)
+			this.$store.commit('PROJECTS_LOADING', true)
+			this.$store.commit('ITERATIONS_LOADING', true)
             this.$store.dispatch('createTeam', this.newTeam)
                 .then((response) => {
                         this.$store.dispatch('initMenus')

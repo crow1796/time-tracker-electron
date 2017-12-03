@@ -35,19 +35,19 @@ const router = new Router({
 	]
 })
 
-iView.LoadingBar.config({
-  color: '#2d8cf0',
-  failedColor: '#f0ad4e',
-  height: 3
-})
+// iView.LoadingBar.config({
+//   color: '#2d8cf0',
+//   failedColor: '#f0ad4e',
+//   height: 3
+// })
 
 router.beforeEach((to, from, next) => {
-  iView.LoadingBar.start()
+  // iView.LoadingBar.start()
   next()
 })
 
 router.afterEach((to, from, next) => {
-  iView.LoadingBar.finish()
+  // iView.LoadingBar.finish()
 })
 
 export default router

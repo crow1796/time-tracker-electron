@@ -19,6 +19,8 @@ export default {
 		},
 		createProject () {
 			this.$store.commit('CONTENT_LOADING', true)
+			this.$store.commit('PROJECTS_LOADING', true)
+			this.$store.commit('ITERATIONS_LOADING', true)
 			this.$store.dispatch('createProject', this.newProject)
 				.then((response) => {
 					this.newProject = {
