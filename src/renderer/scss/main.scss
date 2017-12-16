@@ -133,7 +133,7 @@ h6{
 	padding: 0 30px;
 	margin-bottom: 10px;
 	padding-bottom: 10px;
-	border-bottom: 1px solid $main-bg;
+	border-bottom: 1px solid rgba($main-bg, .5);
 }
 
 .tracker-modal{
@@ -214,6 +214,9 @@ h6{
 }
 
 .task-description {
+	border: 1px solid rgba(darken($light-bg, 22%), 0.09);
+	box-shadow: inset 2px 2px 3px rgba(darken($light-bg, 18%), .05);
+	border-radius: $main-border-radius;
 	.ql-editor,
 	.ql-code{
 		height: 200px;
@@ -226,7 +229,7 @@ h6{
 	&-layout{
 		min-height: 100vh;
 		max-height: 100vh;
-		padding-top: 33px;
+		// padding-top: 33px;
 		overflow: hidden;
 	}
 	
@@ -249,12 +252,13 @@ h6{
 		display: block;
 		border-radius: $main-border-radius;
 		background-color: $light-bg;
-		border: 0;
+		border: 1px solid rgba(darken($light-bg, 22%), 0.09);
 		color: $main-text-color;
 		outline: 0 !important;
 		font-weight: normal;
 		font-size: 1.1em;
 		padding: 7px;
+		box-shadow: inset 2px 2px 3px rgba(darken($light-bg, 18%), .05);
 	}
 
 	&-input.-lg{
@@ -445,11 +449,18 @@ h6{
 	
 	.teams-list > .team.-add{
 		border-style: dashed;
-		border-color: $main-text-color;
+		border-color: $main-text-color !important;
+		border-radius: 50% !important;
+		border-width: 1px;
+
+		&:hover{
+			border-color: $warning !important;
+		}
 	}
 
 	.teams-list > .team:hover{
-		border-color: $warning;
+		border-color: transparent transparent transparent $warning;
+		border-radius: 0;
 		color: $warning;
 	}
 
@@ -458,7 +469,8 @@ h6{
 	}
 
 	.teams-list > .team.-active{
-		border-color: $warning;
+		border-color: transparent transparent transparent $warning;
+		border-radius: 0;
 		color: $warning !important;
 	}
 	
@@ -476,6 +488,11 @@ h6{
 	.user-info{
 		cursor: pointer;
 		font-size: 2em;
+	}
+
+	.user-info > .team.-add,
+	.user-info > .team.-add:hover{
+		border-color: transparent !important;
 	}
 	
 	.user-info > .vue-avatar--wrapper{
@@ -584,7 +601,7 @@ h6{
 	}
 
 	.controls{
-		float: right;
+		float: left;
 	}
 	
 	.projects-list > .project > .controls,
@@ -694,7 +711,7 @@ h6{
 	}
 
 	.ivu-modal-footer{
-		border-top-color: $main-bg;
+		border-top-color: rgba($main-bg, .5);
 	}
 	
 	.form-group{

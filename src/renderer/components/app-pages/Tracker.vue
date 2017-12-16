@@ -54,21 +54,21 @@ export default {
                     <button class="tq-btn -md -warning" type="button" @click="createNewTask">New Task</button>
                 </div>
 		    	<tasks-list ref="tasksList" @selected="editTask"></tasks-list>
-		    	<div class="task-view-toggle">
-		    		<Tooltip content="Board View" placement="left">
-	    				<div class="toggle">
-	    					<Icon type="ios-list-outline"></Icon>
-	    				</div>
-		            </Tooltip>
-		    	</div>
 				<iteration-form ref="createIterationForm"></iteration-form>
+            	<task-form ref="taskForm"></task-form>
 		    </div>
 
-		    <div v-if="!projects.length && !selectedProject">
-            	<h1 class="text-center">You don't have any projects yet.
+		    <div v-if="!teams.length">
+            	<h1 class="text-center">
+					You don't have any team yet.
                 </h1>
 		    </div>
-            <task-form ref="taskForm"></task-form>
+
+		    <div v-if="!projects.length && teams.length">
+            	<h1 class="text-center">
+					You don't have any project yet.
+                </h1>
+		    </div>
 		</div>
 	</div>
 </template>

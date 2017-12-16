@@ -25,7 +25,8 @@ export default {
             this.$store.dispatch('createTeam', this.newTeam)
                 .then((response) => {
                         this.$store.dispatch('initMenus')
-                            .then((response) => {
+                            .then((res) => {
+                                this.$router.replace(`/tracker/${response.data.team.id}`)
                                 this.newTeam = {
                                     name: null
                                 }

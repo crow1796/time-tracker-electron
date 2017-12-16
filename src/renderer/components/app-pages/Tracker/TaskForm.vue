@@ -37,7 +37,7 @@
 				originalTask: null,
 				editorOption: {
 					theme: 'bubble',
-					placeholder: 'Insert description here...'
+					placeholder: ''
 				}
 			}
 		},

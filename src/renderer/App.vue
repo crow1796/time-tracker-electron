@@ -22,14 +22,14 @@
 			</div>
 		</div>
 		<div id="logged-in" v-if="isLoggedIn">
-			<div id="top-nav">
+			<!-- <div id="top-nav">
 				<span class="hamburger-menu">
 					<Icon type="android-menu"></Icon>
 				</span>
 				<span class="logo">
 					<img src="static/images/logo.png" alt="Logo">
 				</span>
-			</div>
+			</div> -->
 			<div class="tq-layout">
 				<section class="teams-section">
 					<ul class="teams-list">
@@ -87,16 +87,24 @@
 						</li>
 					</ul>
 				</section>
+				<section class="content-section" :class="{ '-no-projects-section': !showTeamProjects }">
+					<tq-spinner v-if="contentLoading"></tq-spinner>
+					<transition name="fade" mode="out-in">
+						<router-view class="view" 
+								keep-alive
+								transition
+								transition-mode="in-out">
+						</router-view>
+					</transition>
+				</section>
 				<section class="projects-section" v-show="showTeamProjects">
 					<div class="projects _relative">
 						<create-project-form ref="createProjectForm"></create-project-form>
-						<div class="heading">
-							<i class="pe-7s-refresh-2 pe-spin" v-if="projectsLoading"></i>
-							Projects 
+						<div class="heading text-right">
 							<div class="controls">
-								<Tooltip content="Create New Project" placement="bottom">
-									<button type="button" class="tq-btn -xs -default" @click="$refs.createProjectForm.open()">
-										<Icon type="ios-plus-outline"></Icon>
+								<Tooltip content="Close" placement="bottom">
+									<button type="button" class="tq-btn -xs -default" @click="hideTeamProjects">
+										<Icon type="android-close"></Icon>
 									</button>
 								</Tooltip>
 
@@ -106,12 +114,14 @@
 									</button>
 								</Tooltip>
 
-								<Tooltip content="Close" placement="bottom">
-									<button type="button" class="tq-btn -xs -default" @click="hideTeamProjects">
-										<Icon type="android-close"></Icon>
+								<Tooltip content="Create New Project" placement="bottom">
+									<button type="button" class="tq-btn -xs -warning" @click="$refs.createProjectForm.open()">
+										<Icon type="ios-plus-outline"></Icon>
 									</button>
 								</Tooltip>
 							</div>
+							Projects 
+							<i class="pe-7s-refresh-2 pe-spin" v-if="projectsLoading"></i>
 						</div>
 						<div>
 						</div>
@@ -138,12 +148,12 @@
 						</ul>
 					</div>
 					<div class="iterations _relative" v-if="selectedProject">
-						<div class="heading">
-							<i class="pe-7s-refresh-2 pe-spin" v-if="iterationsLoading"></i> 
+						<div class="heading text-right">
 							Iterations
+							<i class="pe-7s-refresh-2 pe-spin" v-if="iterationsLoading"></i> 
 							<div class="controls">
 								<Tooltip content="Create New Iteration" placement="bottom">
-									<button type="button" class="tq-btn -xs -default" @click="$refs.iterationForm.open()">
+									<button type="button" class="tq-btn -xs -warning" @click="$refs.iterationForm.open()">
 										<Icon type="ios-plus-outline"></Icon>
 									</button>
 								</Tooltip>
@@ -177,16 +187,6 @@
 							</li>
 						</ul>
 					</div>
-				</section>
-				<section class="content-section" :class="{ '-no-projects-section': !showTeamProjects }">
-					<tq-spinner v-if="contentLoading"></tq-spinner>
-					<transition name="fade" mode="out-in">
-						<router-view class="view" 
-								keep-alive
-								transition
-								transition-mode="in-out">
-						</router-view>
-					</transition>
 				</section>
 			</div>
 		    <create-team-form ref="createTeamForm"></create-team-form>
